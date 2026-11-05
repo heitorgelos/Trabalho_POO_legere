@@ -18,8 +18,21 @@ class BDManager_cnt(ABC):
     @abstractmethod
     def validar_objeto(self):
         """
-        Recebe um objeto e pesquisa se ele de fato existe na base de dados, se sim retorna ele
-        se não retorna None
+        Recebe um objeto e pesquisa se ele de fato existe na base de dados, se sim retorna true se não retorna False
         """
         pass
 
+    @abstractmethod
+    def indicar_objeto(self):
+        """
+        Usará IA para indicar um livro ou objeto de possível agrado do usuário de acordo com suas preferências
+        """
+
+
+    @abstractmethod
+    def atualizar_objeto(self, obj): 
+        """
+        Atualiza a base de dados com as novas informações 
+        """
+        pass 
+   
