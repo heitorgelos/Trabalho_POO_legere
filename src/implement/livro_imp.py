@@ -6,6 +6,9 @@ Aqui se implementa os atributos e métodos obrigatórios
 #from src.models.usuario_comum_cnt import UsuarioComum_cnt
 #from src.implement.BDManager_imp import BDmanager
 
+# TIRAR SETTER (???)
+
+
 class Livro():
     
     def __init__(self, titulo: str, autor: str, ano: int, num_paginas: int, 
