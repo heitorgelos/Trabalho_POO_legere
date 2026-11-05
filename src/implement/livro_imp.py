@@ -22,8 +22,8 @@ class Livro():
         self.descricao = descricao # g/s OK
         self.faixa_etaria = faixa_etaria # g/s
 
-        self.estrelas = 0.0 #so get (atualiza a cada avaliacao)
-        self.resenhas = ["legal", "ok"] #so get (idem)
+        self.__estrelas = 3.5 #so get (atualiza a cada avaliacao)
+        self.__resenhas = ["legal", "ok", "a", "b"] #so get (idem)
     
     # TITULO
     @property
@@ -137,9 +137,19 @@ class Livro():
 
     # completamente provisório e incompleto !!!!!!
     def avaliar(self, nota: float, resenha: str) -> None:
-        self.resenhas.append(resenha)
-        self.estrelas = nota
-        print(f"O Livro {self.titulo} recebeu {nota} estrelas")
+        if nota < 0 or nota > 5:
+            raise ValueError("A nota deve ser entre 0 e 5.")
+        resenha_str = resenha.strip()
+        if not resenha_str:
+            raise ValueError("A resenha não pode ser vazia")
+        qtd_avaliacoes = len(self.__resenhas)
+        nota_total = qtd_avaliacoes * self.__estrelas
+        media_nova = (nota_total + nota) / (qtd_avaliacoes + 1)
+        
+        self.__resenhas.append(resenha_str)
+        self.__estrelas = media_nova
+        print(f"O Livro foi avaliado com sucesso!")
+        print(f"Nova média: {media_nova}") # Tirar depois
 
 livro1 = Livro(
         titulo="harry potter",
@@ -151,9 +161,10 @@ livro1 = Livro(
         descricao="harry potter bla bla bla",
         faixa_etaria="12+"
     )
-    
-livro1.avaliar(4.8, "Obra prima")
 
+livro1.avaliar(5, "Obra prima")
+
+'''
 for i in livro1.resenhas:
     print(i)
 
@@ -163,3 +174,4 @@ print(livro1.titulo)
 livro1.avaliar(4.8, "Obra prima parte 2")
 for i in livro1.resenhas:
     print(i)
+    '''
