@@ -2,13 +2,13 @@
 Este código é o contrato da classe UsuarioComum
 Aqui se determina os atributos e métodos obrigatórios
 """
-#colocar os tipos livro e pessoa nos metodos, herdar ambas
 
-
-from src.models.pessoa_cnt import Pessoa
+#from src.models.pessoa_cnt import Pessoa
+from src.implement.BDManager_imp import BDmanager
+from src.implement.livro_imp import Livro
 from abc import ABC, abstractmethod
 
-class UsuarioComum_cnt(Pessoa):
+class UsuarioComum_cnt():
     def __init__(self, nome, login, senha):
         super().__init__(nome, login, senha)
 
@@ -34,10 +34,19 @@ class UsuarioComum_cnt(Pessoa):
         pass
 
     @abstractmethod
-    def contar_leitura(self,paginas: int, tempo: float)-> None:
-        """
-        Registra páginas e o tempo de leitura
-        """
+    def consultar_meta(self)-> None:
+        pass
+
+    @abstractmethod
+    def registrar_tempo_leitura(self, tempo: float)-> None:
+        pass
+
+    @abstractmethod
+    def registrar_paginas_lidas(self, valor:int)-> None:
+        pass
+
+    @abstractmethod
+    def registrar_paginas_por_mes(self, mes: str, paginaslidas: int)-> None:
         pass
 
     @abstractmethod
@@ -47,7 +56,7 @@ class UsuarioComum_cnt(Pessoa):
         """
         pass
     @abstractmethod
-    def cadastrar_livro(self, livro, bd)-> bool:
+    def cadastrar_livro_bp(self, livro, bd)-> bool:
         """
         Cadastra um livro exixtente no banco de dados
         na biblioteca pessoal
@@ -57,27 +66,48 @@ class UsuarioComum_cnt(Pessoa):
         pass
 
     @abstractmethod
-    def adicionar_lista_desejo(self, livro)-> None:#ou bool pra verificar, nn?
+    def adicionar_lista_desejo(self, livro: Livro, bd: BDmanager)-> None:#ou bool pra verificar, nn?
         """
         Adiciona um livro à lista de desejos
         """
         pass
 
     @abstractmethod
-    def avaliar_livro(self, livro, nota, resenha)-> None:
+    def avaliar_livro(self, livro: Livro, nota: float, resenha: str)-> None:
         """
         Registra nota e/ou resenha de um livro
         """
         pass
 
     @abstractmethod
-    def registrar_trecho(self, livro, trecho)-> None:
+    def registrar_trecho(self, livro: Livro, trecho:str)-> None:
         """
         Registra um trecho interessante de um livro
         """
         pass
+    @abstractmethod
+    def iniciar_leitura(self, livro: Livro)-> None:
+        pass
 
+    @abstractmethod
+    def concluir_leitura(self)-> None:
+        pass
 
+    @abstractmethod
+    def bandonar_leitura(self)-> None:
+        pass
+
+    @abstractmethod
+    def adicionar_preferencia(self,genero: str)-> None:
+        pass
+
+    @abstractmethod
+    def remover_preferencia(self,genero: str)-> None:
+        pass
+
+    @abstractmethod
+    def consultar_preferencia(self,genero: str)-> None:
+        pass
 
 #esperar metodos de pessoa
 
