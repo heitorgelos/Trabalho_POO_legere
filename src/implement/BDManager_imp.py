@@ -13,14 +13,16 @@ class BDmanager(BDManager_cnt):
         self._df_livros = pd.DataFrame()
         self._df_pessoas = pd.DataFrame()
 
-    def carregar_database(self):
+    def carregar_database(self) -> bool:
         diretorio_atual = Path(__file__).resolve().parent.parent #Pegando o diretorio dos dados
 
+        #Obtendo os livros
         caminho_csv = diretorio_atual / "database" /"livros_ficticios.csv"
 
         df_livros = pd.read_csv(caminho_csv)
         df_livros["_Livro__resenhas"] = df_livros["_Livro__resenhas"].apply(json.loads) #Aqui se pega a coluna de resenhas e se quebra em uma lista
 
+        #Obtendo as pessoas
         caminho_csv = diretorio_atual / "database" /"usuarios_comuns_ficticios.csv"
 
         df_pessoas = pd.read_csv(caminho_csv)
@@ -55,18 +57,22 @@ class BDmanager(BDManager_cnt):
         self._df_pessoas = df_pessoas
         return True
     
-    def validar_objeto(self, obj):
+    def validar_objeto(self, obj) -> tuple[bool, any]:
 
         if isinstance(obj, UsuarioComum): 
-            #Aqui eu vou checar se o id do usuário existe no df
+
+            #Aqui eu vou checar se o nome do usuário existe no df
             linha_alvo = self._df_pessoas[self._df_pessoas["login"] == obj.login]
             if len(linha_alvo)==0:
                 return None, False
+
+            #Pegando o índice da linha
             linha_idx = linha_alvo.index[0]
+
+            #Pegando os dicionarios e comparando
             linha_dict = self._df_pessoas.iloc[linha_idx].to_dict()
             obj_cmp = UsuarioComum.__new__(UsuarioComum)
             obj_cmp.__dict__ = linha_dict
-            #print("Dicts encontrados: \n", "Primeiro: ",linha_dict, "\nSegundo: ",obj.__dict__)
             cmp = (
                 obj_cmp.__dict__["login"] == obj.__dict__["login"]
                 and obj_cmp.__dict__["senha"] == obj.__dict__["senha"]
@@ -74,8 +80,7 @@ class BDmanager(BDManager_cnt):
             print("Pessoa encontrada")
             return cmp, obj
 
-        elif isinstance(obj, Livro):
-            #Aqui eu vou checar se os dados do livros são correspondentes a algum já existente
+        elif isinstance(obj, Livro): #Mesma lógica
             linha_alvo = self._df_livros[self._df_livros["titulo"]==obj.titulo]
             if len(linha_alvo)==0:
                 print("Livro não existe")
@@ -85,13 +90,12 @@ class BDmanager(BDManager_cnt):
             obj_cmp = Livro.__new__(Livro)
             obj_cmp.__dict__ = linha_dict
             cmp = (obj_cmp.__dict__["titulo"] == obj.__dict__["_Livro__titulo"] and obj_cmp.__dict__["autor"] == obj.__dict__["_Livro__autor"])
-            #print("Livro encontrado, dicionarios: \nOBJETO RECEBIDO: ", obj.__dict__,"\n\nOBJETO DO DF: ", obj_cmp.__dict__,"\n\nDICIONARIO DA LINHA: ", linha_dict)
             return cmp, obj
 
         else: 
-            raise ValueError("Objeto inserido desconhecido")
+            raise TypeError("Objeto inserido não é de um dos tipos reconhecidos pelo sistema")
         
-    def salvar_database(self, caminho, COLUNAS_JSON, df_rec):
+    def salvar_database(self, caminho:str, COLUNAS_JSON:list, df_rec:pd.DataFrame) -> None:
         df = df_rec.copy()  # copia pra não destruir as listas em memória
 
         for col in COLUNAS_JSON:
@@ -101,7 +105,7 @@ class BDmanager(BDManager_cnt):
         df.to_csv(caminho, index=False, encoding="utf-8-sig")
 
 
-    def atualizar_objeto(self, obj_original): 
+    def atualizar_objeto(self, obj_original) -> bool: 
         #Caminho de salvamento
         RAIZ = Path(__file__).resolve().parents[2]
         PASTA_DB = RAIZ / "src" / "database"
