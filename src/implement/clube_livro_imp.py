@@ -7,7 +7,7 @@ from src.implement.livro_imp import Livro
 from src.implement.usuario_comum_imp import UsuarioComum
 
 from pathlib import Path
-import pandas as pd, json
+import pandas as pd, json 
 import json
 
 class ClubeLivro(ClubeLivro_cnt):
@@ -85,8 +85,7 @@ class ClubeLivro(ClubeLivro_cnt):
            self.__livros.append(Livro.titulo)
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
-        
-        
+               
     def adicionar_pessoa(self, solicitante, adicionado):
         if self.__moderador[0] == solicitante.login:
             if adicionado.login in self.__excluidos:

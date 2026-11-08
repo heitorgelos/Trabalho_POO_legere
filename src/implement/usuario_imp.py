@@ -2,7 +2,7 @@
 Este código é a implementação da classe Usuario
 Aqui se implementa os atributos e métodos obrigatórios
 """
-from Trabalho_POO_legere.src.models.usuario_cnt import Usuario_cnt
+from src.models.usuario_cnt import Usuario_cnt
 from src.implement.BDManager_imp import BDmanager
 from src.implement.livro_imp import Livro
  
@@ -188,7 +188,7 @@ class Usuario(Usuario_cnt):
         if not trecho.strip():
             raise ValueError("O trecho não pode ser vazio")
 
-        if livro not in self.__livros_lidos and livro is not self.__livro_atual: # só entra no bloco se as duas condições forem true
+        if livro not in self.__livros_lidos and livro != self.__livro_atual: # só entra no bloco se as duas condições forem true
             raise ValueError("Só é possivel registrar trechos de livros lidos ou em leitura")
 
         #os trechos pref são informações dadas pelo usuário e cada resgistro liga o trecho a um livro referente

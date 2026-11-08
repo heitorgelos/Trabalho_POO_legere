@@ -37,7 +37,7 @@ class Usuario_cnt(ABC):
         pass
 
     @abstractmethod
-    def consultar_meta(self)-> list:
+    def consultar_metas(self)-> list:
         """
         Exibe metas cadastradas pelo usuário
         """
