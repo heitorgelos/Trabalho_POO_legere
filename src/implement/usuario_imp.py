@@ -3,7 +3,7 @@ Este código é a implementação da classe Usuario
 Aqui se implementa os atributos e métodos obrigatórios
 """
 from src.models.usuario_cnt import Usuario_cnt
-from src.implement.BDManager_imp import BDmanager
+from src.models.BDManager_cnt import BDManager_cnt
 from src.implement.livro_imp import Livro
  
 
@@ -15,8 +15,8 @@ class Usuario(Usuario_cnt):
         #verificação dos dados para login
         if not isinstance(nome, str):
             raise TypeError("O nome deve ser uma string")
-        if not nome.strip():
-            raise ValueError("O nome não pdoe ser vazio")
+        #if not nome.strip():
+         #   raise ValueError("O nome não pode ser vazio")
 
         if not isinstance(login, str):
             raise TypeError("O login deve ser uma string")
@@ -139,11 +139,11 @@ class Usuario(Usuario_cnt):
 
         self.__amigos.append(user)
 
-    def cadastrar_livro_bp(self, livro:Livro, bd:BDmanager)->None:
+    def cadastrar_livro_bp(self, livro:Livro, bd:BDManager_cnt)->None:
         if not isinstance(livro, Livro):
             raise TypeError("O livro indicado não é uma instância de Livro")
 
-        if not isinstance(bd, BDmanager):
+        if not isinstance(bd, BDManager_cnt):
             raise TypeError("O banco informado não é uma instância de BDmanager")
         
         if bd.validar_objeto(livro) == False:
@@ -154,11 +154,11 @@ class Usuario(Usuario_cnt):
         
         self.__biblioteca_pessoal.append(livro)
 
-    def adicionar_lista_desejo(self, livro: Livro, bd: BDmanager)->None:
+    def adicionar_lista_desejo(self, livro: Livro, bd: BDManager_cnt)->None:
         if not isinstance(livro, Livro):
             raise TypeError("O livro indicado não é uma instância de Livro")
 
-        if not isinstance(bd, BDmanager):
+        if not isinstance(bd, BDManager_cnt):
             raise TypeError("O banco informado não é uma instância de BDmanager")
     
         if bd.validar_objeto(livro) == False:
@@ -195,11 +195,11 @@ class Usuario(Usuario_cnt):
         registro = {"livro": livro, "texto": trecho.strip()}
         self.__trechos_pref.append(registro) 
 
-    def iniciar_leitura(self, livro: Livro, bd:BDmanager)->None:
+    def iniciar_leitura(self, livro: Livro, bd:BDManager_cnt)->None:
         if not  isinstance(livro, Livro):
             raise TypeError("O objeto informado não um Livro")
 
-        if not isinstance(bd, BDmanager):
+        if not isinstance(bd, BDManager_cnt):
             raise TypeError("O banco indicado deve ser uma instância de BDmanager")
 
         if self.__livro_atual is not None:

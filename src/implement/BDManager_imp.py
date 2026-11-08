@@ -74,8 +74,8 @@ class BDmanager(BDManager_cnt):
             obj_cmp = UsuarioComum.__new__(UsuarioComum)
             obj_cmp.__dict__ = linha_dict
             cmp = (
-                obj_cmp.__dict__["login"] == obj.__dict__["login"]
-                and obj_cmp.__dict__["senha"] == obj.__dict__["senha"]
+                obj_cmp.__dict__["login"] == obj.__dict__["_login"]
+                and obj_cmp.__dict__["_senha"] == obj.__dict__["_Usuario__senha"]
             )
             print("Pessoa encontrada")
             return cmp, obj
@@ -122,15 +122,16 @@ class BDmanager(BDManager_cnt):
                 idx = self._df_pessoas.index[mask][0] #Pego o índice da minha linha que possui os dados do objeto
 
                 for coluna in self._df_pessoas.columns:
-                    if coluna in ("nome", "login", "senha"):
+                    if coluna in ("nome", "login"):
                         valor = getattr(obj_original, coluna)  #Pega os atributos simples          
                     else:
-                        valor = getattr(obj_original, f"_UsuarioComum_{coluna}", None) #Pega os atributos das colunas protegidas (python faz o name mangling colonado antes o nome da classe)
+                        valor = getattr(obj_original, f"_Usuario_{coluna}", None) #Pega os atributos das colunas protegidas (python faz o name mangling colonado antes o nome da classe)
+                        print(valor)
                     self._df_pessoas.at[idx, coluna] = valor  
                     #print("Valor inserido: ", valor)                 
 
             #Aqui se filtra as colunas que não possuem listas pra poder empacotar tudo usando json
-            colunas_json = [c for c in self._df_pessoas.columns if c not in ("nome", "login", "senha", "_livro_atual", "_tempo_medio_leitura_min_dia")]
+            colunas_json = [c for c in self._df_pessoas.columns if c not in ("nome", "login", "_senha", "_livro_atual", "_tempo_medio_leitura_min_dia")]
             self.salvar_database(caminho_pessoas, colunas_json, self._df_pessoas)
 
         elif isinstance(obj_original, Livro):

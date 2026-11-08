@@ -19,6 +19,8 @@ class BDManager_cnt(ABC):
     def validar_objeto(self):
         """
         Recebe um objeto e pesquisa se ele de fato existe na base de dados, se sim retorna true se não retorna False
+        Para usuários: busca pelo nome e login 
+        Para livros: busca pelo título
         """
         pass
 
@@ -33,6 +35,8 @@ class BDManager_cnt(ABC):
     def atualizar_objeto(self, obj): 
         """
         Atualiza a base de dados com as novas informações 
+        Para usuários: busca pelo nome e login -> inalteráveis
+        Para livros: busca pelo título -> inalteráveis
         """
         pass 
    
