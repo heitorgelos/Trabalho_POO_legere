@@ -104,7 +104,6 @@ class BDmanager(BDManager_cnt):
 
         df.to_csv(caminho, index=False, encoding="utf-8-sig")
 
-
     def atualizar_objeto(self, obj_original) -> bool: 
         #Caminho de salvamento
         RAIZ = Path(__file__).resolve().parents[2]
