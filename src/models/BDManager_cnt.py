@@ -22,7 +22,7 @@ class BDManager_cnt(ABC):
         """
         pass
 
-    @abstractmethod
+    #@abstractmethod
     def indicar_objeto(self):
         """
         Usará IA para indicar um livro ou objeto de possível agrado do usuário de acordo com suas preferências

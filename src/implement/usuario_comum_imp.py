@@ -3,13 +3,16 @@ Este código é a implementação da classe UsuarioComum
 Aqui se implementa os atributos e métodos obrigatórios
 """
 from src.models.usuario_comum_cnt import UsuarioComum_cnt
-from src.implement.BDManager_imp import BDmanager
+from src.models.BDManager_cnt import BDManager_cnt
 from src.implement.livro_imp import Livro
 
 
 class UsuarioComum(UsuarioComum_cnt):
     def __init__(self, nome, login, senha):
-        super().__init__(nome, login, senha)
+        #super().__init__(nome, login, senha)
+        self.nome = nome
+        self.login = login
+        self.senha = senha
         self.__biblioteca_pessoal = []
         self.__biblioteca_desejo = []
         self.__livro_atual = None

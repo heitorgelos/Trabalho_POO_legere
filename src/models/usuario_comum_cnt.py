@@ -4,7 +4,7 @@ Aqui se determina os atributos e métodos obrigatórios
 """
 
 #from src.models.pessoa_cnt import Pessoa
-from src.implement.BDManager_imp import BDmanager
+from src.models.BDManager_cnt import BDManager_cnt
 from src.implement.livro_imp import Livro
 from abc import ABC, abstractmethod
 

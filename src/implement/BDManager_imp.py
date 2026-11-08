@@ -3,18 +3,10 @@ Este código é a implementação da classe BDmanager.
 Aqui se implementa os atributos e métodos obrigatórios
 """
 from src.models.BDManager_cnt import BDManager_cnt
+from src.implement.usuario_comum_imp import UsuarioComum
+from src.implement.livro_imp import Livro
 from pathlib import Path
 import pandas as pd, json
-
-class UsuarioComum():
-    def __init__(self):
-        self.id = 0
-        pass
-
-class Livro():
-    def __init__(self):
-        self.nome = "Hello world"
-        pass
 
 class BDmanager(BDManager_cnt):
     def __init__(self):
@@ -27,74 +19,133 @@ class BDmanager(BDManager_cnt):
         caminho_csv = diretorio_atual / "database" /"livros_ficticios.csv"
 
         df_livros = pd.read_csv(caminho_csv)
-        df_livros["resenhas"] = df_livros["resenhas"].apply(json.loads) #Aqui se pega a coluna de resenhas e se quebra em uma lista
-        #print(df_livros.head(n=1))
-        #print(df_livros.info())
+        df_livros["_Livro__resenhas"] = df_livros["_Livro__resenhas"].apply(json.loads) #Aqui se pega a coluna de resenhas e se quebra em uma lista
 
         caminho_csv = diretorio_atual / "database" /"usuarios_comuns_ficticios.csv"
-        
-        df_pessoas = pd.read_csv(caminho_csv)
-        df_pessoas["biblioteca_pessoal"] = df_pessoas["biblioteca_pessoal"].apply(json.loads) 
-        df_pessoas["biblioteca_desejo"] = df_pessoas["biblioteca_desejo"].apply(json.loads)
-        df_pessoas["livros_lidos"] = df_pessoas["livros_lidos"].apply(json.loads) 
-        df_pessoas["preferencias_genero"] = df_pessoas["preferencias_genero"].apply(json.loads) 
-        df_pessoas["livros_abandonados"] = df_pessoas["livros_abandonados"].apply(json.loads) 
-        df_pessoas["amigos"] = df_pessoas["amigos"].apply(json.loads)
-        df_pessoas["trechos_pref"] = df_pessoas["trechos_pref"].apply(json.loads) 
-        df_pessoas["metas_leitura"] = df_pessoas["metas_leitura"].apply(json.loads) 
 
-        
-        print(df_pessoas.biblioteca_pessoal)
+        df_pessoas = pd.read_csv(caminho_csv)
+    
+        def _parse_json(x, padrao):
+            if isinstance(x, str) and x.strip():
+                return json.loads(x)
+            return padrao  # vazio/NaN vira o padrão
+
+        #Colunas que empacotam dados
+        COLUNAS_JSON = {
+            "_biblioteca_pessoal": list,
+            "_biblioteca_desejo": list,
+            "_livros_lidos": list,
+            "_paginometro": dict,
+            "_preferencias_genero": list,
+            "_livros_abandonados": list,
+            "_amigos": list,
+            "_trechos_pref": list,
+            "_metas_leitura": list,
+        }
+
+        #Aplicando o desempacotamento json
+        for col, tipo in COLUNAS_JSON.items():
+            df_pessoas[col] = df_pessoas[col].apply(lambda x, t=tipo: _parse_json(x, t()))
+
+        df_pessoas["_livro_atual"] = df_pessoas["_livro_atual"].fillna("")
+        df_pessoas["_tempo_medio_leitura_min_dia"] = df_pessoas["_tempo_medio_leitura_min_dia"].fillna(0)
+        df_pessoas["nome"] = df_pessoas["nome"].fillna("")
 
         self._df_livros = df_livros
-        self.df_livros = df_pessoas
+        self._df_pessoas = df_pessoas
         return True
     
     def validar_objeto(self, obj):
+
         if isinstance(obj, UsuarioComum): 
             #Aqui eu vou checar se o id do usuário existe no df
             linha_alvo = self._df_pessoas[self._df_pessoas["login"] == obj.login]
             if len(linha_alvo)==0:
-                return False
-            #obj_cmp = UsuarioComum() aqui eu crio o objeto para comparação 
-            #cmp = obj_cmp.__dict__ == obj.__dict__
-            #return cmp, obj
-            pass
+                return None, False
+            linha_idx = linha_alvo.index[0]
+            linha_dict = self._df_pessoas.iloc[linha_idx].to_dict()
+            obj_cmp = UsuarioComum.__new__(UsuarioComum)
+            obj_cmp.__dict__ = linha_dict
+            #print("Dicts encontrados: \n", "Primeiro: ",linha_dict, "\nSegundo: ",obj.__dict__)
+            cmp = (
+                obj_cmp.__dict__["login"] == obj.__dict__["login"]
+                and obj_cmp.__dict__["senha"] == obj.__dict__["senha"]
+            )
+            print("Pessoa encontrada")
+            return cmp, obj
 
         elif isinstance(obj, Livro):
             #Aqui eu vou checar se os dados do livros são correspondentes a algum já existente
-            linha_alvo = self._df_livros[self._df_livros["nome"]==obj.nome]
+            linha_alvo = self._df_livros[self._df_livros["titulo"]==obj.titulo]
             if len(linha_alvo)==0:
+                print("Livro não existe")
                 return False
-            #Depois se compara com a linha achada
-            #obj_cmp = Livros() aqui se cria o objeto 
-            # cmp = obj_cmp.__dict__ == obj.__dict__
-            #return cmp, obj
-
-            pass
+            linha_idx = linha_alvo.index[0]
+            linha_dict = self._df_livros.iloc[linha_idx].to_dict()
+            obj_cmp = Livro.__new__(Livro)
+            obj_cmp.__dict__ = linha_dict
+            cmp = (obj_cmp.__dict__["titulo"] == obj.__dict__["_Livro__titulo"] and obj_cmp.__dict__["autor"] == obj.__dict__["_Livro__autor"])
+            #print("Livro encontrado, dicionarios: \nOBJETO RECEBIDO: ", obj.__dict__,"\n\nOBJETO DO DF: ", obj_cmp.__dict__,"\n\nDICIONARIO DA LINHA: ", linha_dict)
+            return cmp, obj
 
         else: 
             raise ValueError("Objeto inserido desconhecido")
+        
+    def salvar_database(self, caminho, COLUNAS_JSON, df_rec):
+        df = df_rec.copy()  # copia pra não destruir as listas em memória
 
-    def atualizar_objeto(self, obj): 
-        if isinstance(obj, UsuarioComum): 
-            #Procurando e recebendo o usuario pelo ID
-            is_user_true = self.procurar_objeto(obj)
+        for col in COLUNAS_JSON:
+            if col in df.columns:
+                df[col] = df[col].apply(lambda x: json.dumps(x, ensure_ascii=False))
+
+        df.to_csv(caminho, index=False, encoding="utf-8-sig")
+
+
+    def atualizar_objeto(self, obj_original): 
+        #Caminho de salvamento
+        RAIZ = Path(__file__).resolve().parents[2]
+        PASTA_DB = RAIZ / "src" / "database"
+
+        caminho_pessoas = PASTA_DB /"usuarios_comuns_ficticios_2.csv"
+        caminho_livros  = PASTA_DB / "livros_ficticios_2.csv"
+
+        if isinstance(obj_original, UsuarioComum):
+            is_user_true, obj_cmp = self.validar_objeto(obj_original)
 
             if is_user_true:
-                #Sobrescrever a linha deles no df
-                mask = self._df_pessoas["id"] == obj.id
+                print("Existência de usuário verificada")
+                mask = self._df_pessoas["login"] == obj_original.login   # login em vez de nome (nome pode ser vazio)
+                idx = self._df_pessoas.index[mask][0] #Pego o índice da minha linha que possui os dados do objeto
 
-                for coluna in self._df_pessoas.keys():
-                    self._df_pessoas.loc[mask, str(coluna)] = obj.coluna #Usando .loc para não modificar uma cópia do df
+                for coluna in self._df_pessoas.columns:
+                    if coluna in ("nome", "login", "senha"):
+                        valor = getattr(obj_original, coluna)  #Pega os atributos simples          
+                    else:
+                        valor = getattr(obj_original, f"_UsuarioComum_{coluna}", None) #Pega os atributos das colunas protegidas (python faz o name mangling colonado antes o nome da classe)
+                    self._df_pessoas.at[idx, coluna] = valor  
+                    #print("Valor inserido: ", valor)                 
 
-            #Escrever no CSV
-            #?
-            pass
-        elif isinstance(obj, Livro):
-            #Procurando e recebendo o usuario pelo nome do livro
-            #Sobrescrever a linha dele no df
-            #Escrever no CSV
+            #Aqui se filtra as colunas que não possuem listas pra poder empacotar tudo usando json
+            colunas_json = [c for c in self._df_pessoas.columns if c not in ("nome", "login", "senha", "_livro_atual", "_tempo_medio_leitura_min_dia")]
+            self.salvar_database(caminho_pessoas, colunas_json, self._df_pessoas)
+
+        elif isinstance(obj_original, Livro):
+            is_user_true, obj_cmp = self.validar_objeto(obj_original)
+
+            if is_user_true:
+                print("Existência de livro verificada")
+                mask = self._df_livros["titulo"] == obj_original.titulo   # nome é único para todos
+                idx = self._df_livros.index[mask][0] #Pego o índice da minha linha que possui os dados do objeto
+
+                for coluna in self._df_livros.columns:
+                    valor = getattr(obj_original, coluna)  #Pega os atributos simples          
+                    self._df_livros.at[idx, coluna] = valor  
+                    print("Valor inserido: ", valor)                 
+
+            #Aqui se filtra as colunas que não possuem listas pra poder empacotar tudo usando json
+            colunas_json = ["resenhas"]
+            self.salvar_database(caminho_livros, colunas_json, self._df_livros)
+
             pass
         else: 
             raise ValueError("Objeto inserido desconhecido")
@@ -105,5 +156,25 @@ class BDmanager(BDManager_cnt):
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()
+    p1 = UsuarioComum('', 'teste','1234')
+    l1 = Livro("A Sombra no Porão","Marcos Valadares", 2018,312,"terror","Editora Noite Alta","Uma família descobre que o porão da casa nova guarda algo que se alimenta do medo.","16+")
+    
+    """
+    TESTE FUNCIONOU!
+    ret = bd1.validar_objeto(p1)
+    print("Validação da pessoa: ",ret)
+    ret = bd1.validar_objeto(l1)
+    print("Validação do livro: ",ret)
+    """
+    """
+    Atributos privados prejudicam bastante mas está funcionando
+    
+    p1.nome = "6767"
+    bd1.atualizar_objeto(p1)
+    l1.descricao = "76"
+    bd1.atualizar_objeto(l1)
+    """
+    
+    
 
 test()
