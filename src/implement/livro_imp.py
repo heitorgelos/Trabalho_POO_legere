@@ -68,68 +68,68 @@ class Livro():
             raise ValueError("A Faixa Etária não pode ser vazia")
         
                
-        self.__titulo = titulo # g OK
-        self.__autor = autor # g OK
-        self.__ano = ano # g OK
-        self.__num_paginas = num_paginas # g OK
-        self.__categoria = categoria # g OK
-        self.__editora = editora # g OK
-        self.__descricao = descricao # g OK
-        self.__faixa_etaria = faixa_etaria # g OK
+        self._titulo = titulo # g OK
+        self._autor = autor # g OK
+        self._ano = ano # g OK
+        self._num_paginas = num_paginas # g OK
+        self._categoria = categoria # g OK
+        self._editora = editora # g OK
+        self._descricao = descricao # g OK
+        self._faixa_etaria = faixa_etaria # g OK
 
         # valores testes (zerar dps)
-        self.__estrelas = 3.5 #so get (atualiza a cada avaliacao)
-        self.__resenhas = ["legal", "ok", "a", "b"] #so get (idem)
+        self._estrelas = 0.0 #so get (atualiza a cada avaliacao)
+        self._resenhas = [] #so get (idem)
     
     # TITULO
     @property
     def titulo(self) -> str:
-        return self.__titulo
+        return self._titulo
  
     # AUTOR
     @property
     def autor(self) -> str:
-        return self.__autor
+        return self._autor
 
     # ANO
     @property
     def ano(self) -> int:
-        return self.__ano
+        return self._ano
 
     # NUMERO DE PAGINAS
     @property
-    def num_paginas(self) -> str:
-        return self.__num_paginas
+    def num_paginas(self) -> int:
+        return self._num_paginas
         
     # CATEGORIA
     @property
     def categoria(self) -> str:
-        return self.__categoria
+        return self._categoria
 
     # EDITORA
     @property
     def editora(self) -> str:
-        return self.__editora
-
+        return self._editora
+    
     # DESCRIÇÃO
     @property
     def descricao(self) -> str:
-        return self.__descricao
+        return self._descricao
 
     # FAIXA ETARIA
     @property
     def faixa_etaria(self) -> str:
-        return self.__faixa_etaria
+        return self._faixa_etaria
 
     # ESTRELAS
     @property
     def estrelas(self) -> float:
-        return self.__estrelas
+        return self._estrelas
 
     # RESENHAS
     @property
     def resenhas(self) -> list[str]:
-        return self.__resenhas
+        return self._resenhas
 
     # completamente provisório e incompleto !!!!!!
     def avaliar(self, nota: float, resenha: str) -> None:
@@ -139,11 +139,11 @@ class Livro():
         if not resenha_str:
             raise ValueError("A resenha não pode ser vazia")
         qtd_avaliacoes = len(self.__resenhas)
-        nota_total = qtd_avaliacoes * self.__estrelas
+        nota_total = qtd_avaliacoes * self._estrelas
         media_nova = (nota_total + nota) / (qtd_avaliacoes + 1)
         
-        self.__resenhas.append(resenha_str)
-        self.__estrelas = media_nova
+        self._resenhas.append(resenha_str)
+        self._estrelas = media_nova
         print(f"O Livro foi avaliado com sucesso!")
         print(f"Nova média: {media_nova}") # Tirar depois
 
@@ -158,11 +158,11 @@ livro1 = Livro(
         descricao="harry potter bla bla bla",
         faixa_etaria="12+"
     )
-
+"""
 livro1.avaliar(5, "Obra prima")
 livro1.__autor = "abc"
 print(livro1.autor)
-
+"""
 '''
 for i in livro1.resenhas:
     print(i)

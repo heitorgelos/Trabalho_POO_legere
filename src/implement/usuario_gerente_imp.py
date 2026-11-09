@@ -1,6 +1,7 @@
 from src.implement.usuario_imp import Usuario
 from src.implement.livro_imp import Livro
 from src.models.clube_livro_cnt import ClubeLivro_cnt
+#from src.implement.clube_livro_imp import ClubeLivro
 from src.implement.usuario_comum_imp import UsuarioComum
 
 
@@ -16,11 +17,13 @@ class UsuarioGerente(Usuario):
         print(f"Login: {self._login}")
         print("Tipo de conta: Gerente")
 
-    def criar_clube(self)->ClubeLivro_cnt:
+    def criar_clube(self)-> 'ClubeLivro':
+        from src.implement.clube_livro_imp import ClubeLivro
+
         if self.__clube is not None:
             raise ValueError("Você já possui um clube")
         
-        self.__clube = ClubeLivro_cnt(self)
+        self.__clube = ClubeLivro(self)
         return self.__clube
 
     def nomear_clube(self, clube:ClubeLivro_cnt, nome: str):
