@@ -34,21 +34,22 @@ class ClubeLivro(ClubeLivro_cnt):
     def nome(self):
         return self.__nome_clube
 
-    def definir_nome(self, solicitante:UsuarioGerente, nome):
+    def definir_nome(self, solicitante:UsuarioGerente, nome) -> bool:
         if self.__moderador[0] == solicitante.login: 
             self.__nome_clube = nome
+            return True
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
             
-    def process_list(self,lista) -> list:
+    def process_list(self,lista:list) -> list:
         lista_proces = []
 
         for i in range(1, len(lista), 2):
             lista_proces.append(lista[i])
         return lista_proces
 
-    def carregar_dados(self):
-        with open("src/database/Teste.txt", mode='r+') as f:
+    def carregar_dados(self) -> bool:
+        with open("src/database/database.txt", mode='r+') as f:
             
             dados_totais = f.readlines()
             
@@ -64,17 +65,17 @@ class ClubeLivro(ClubeLivro_cnt):
                 listas_processadas = []
                 for lista in listas:
                     listas_processadas.append(self.process_list(lista))
-                
+
             except Exception as e:
                 raise ValueError("Problema na base de dados do clube do livro")
             
         self.__moderador , self.__membros, self.__excluidos, self.__livros = listas_processadas
         return True
 
-    def salvar_dados(self):
+    def salvar_dados(self) -> bool:
         if  len(self.__membros)==0 or len(self.__livros)==0 or len(self.__moderador)==0:
             raise ValueError("Há atributos nulos sendo salvos, preencha todas as informações básicas antes")
-        with open("src/database/Teste.txt", mode='a+') as f:
+        with open("src/database/database.txt", mode='a+') as f:
             try:
                 f.write(str(self.__moderador))
                 f.write("\n")
@@ -88,35 +89,39 @@ class ClubeLivro(ClubeLivro_cnt):
                     f.write("\n")
                 f.write(str(self.__livros))
                 f.write("\n")
+                return True
             except Exception as e:
                 raise ValueError("Problema ao salvar na base de dados do clube do livro")
 
-    def adicionar_livro(self, solicitante:UsuarioGerente, Livro:Livro):
+    def adicionar_livro(self, solicitante:UsuarioGerente, Livro:Livro) -> bool:
         if self.__moderador[0] == solicitante.login: 
            self.__livros.append(Livro.titulo)
+           return True
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
                
-    def adicionar_pessoa(self, solicitante:UsuarioGerente, adicionado):
+    def adicionar_pessoa(self, solicitante:UsuarioGerente, adicionado) -> bool:
         if self.__moderador[0] == solicitante.login:
             if adicionado.login in self.__excluidos:
                 print("Membro já foi excluido anteriormente!")
-                return
+                return True
             self.__membros.append(adicionado.login) #Qual atributo do adicionado salvar ?
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
 
-    def expulsar_pessoa(self, solicitante:UsuarioGerente, expulso):
+    def expulsar_pessoa(self, solicitante:UsuarioGerente, expulso) -> bool:
         if self.__moderador[0] == solicitante.login: 
             idx = self.__membros.index(expulso.login)# Já gera erro no caso de membro indisponível
             self.__excluidos.append(self.__membros[idx])
-            self.__membros.pop(idx) #Qual atributo do adicionado salvar ?
+            self.__membros.pop(idx) 
+            return True
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
 
-    def redefinir_moderador(self, solicitante:UsuarioGerente, novo_mod:UsuarioGerente):
+    def redefinir_moderador(self, solicitante:UsuarioGerente, novo_mod:UsuarioGerente) -> bool:
         if self.__moderador[0] == solicitante.login: 
             self.__moderador[0]==novo_mod.login
+            return True
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
 
@@ -126,6 +131,16 @@ class ClubeLivro(ClubeLivro_cnt):
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
 
+    def limpar_clube(self, solicitante:UsuarioGerente, expulso) -> bool:
+        if self.__moderador[0] == solicitante.login: 
+            self.__membros = []
+            self.__excluidos = []
+            self.__livros = [] 
+            return True
+        else: 
+            raise TypeError("Solicitante não tem autorização para realiza a operação")
+
+"""
 def test(): 
     p1 = UsuarioGerente("ze", "pedro", "abc123")
     c1 = ClubeLivro(p1)
@@ -151,16 +166,13 @@ def test():
     print("DEPOIS: ",c1.membros,c1.moderador, c1.livros)
     print("Expulsos: ",c1.ver_expulsos(p1))
 
-    """
+    
     p2 = UsuarioComum("ze", "bist", "abc123")
     p3 = UsuarioComum("ze", "bisteca", "abc123")
 
     c1.adicionar_pessoa(p1, p2) (Validado)
     c1.adicionar_pessoa(p1, p3) (Validado)
     c1.salvar_dados() ( xcluidos)
-    """
-    
-    
-    
 
 test()
+ """

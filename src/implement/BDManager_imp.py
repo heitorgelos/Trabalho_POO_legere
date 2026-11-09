@@ -95,7 +95,7 @@ class BDmanager(BDManager_cnt):
         else: 
             raise TypeError("Objeto inserido não é de um dos tipos reconhecidos pelo sistema")
         
-    def salvar_database(self, caminho:str, COLUNAS_JSON:list, df_rec:pd.DataFrame) -> None:
+    def salvar_database(self, caminho:str, COLUNAS_JSON:list, df_rec:pd.DataFrame) -> bool:
         df = df_rec.copy()  # copia pra não destruir as listas em memória
 
         for col in COLUNAS_JSON:
@@ -103,6 +103,8 @@ class BDmanager(BDManager_cnt):
                 df[col] = df[col].apply(lambda x: json.dumps(x, ensure_ascii=False))
 
         df.to_csv(caminho, index=False, encoding="utf-8-sig")
+
+        return True
 
     def atualizar_objeto(self, obj_original) -> bool: 
         #Caminho de salvamento
@@ -126,8 +128,7 @@ class BDmanager(BDManager_cnt):
                     else:
                         valor = getattr(obj_original, f"_Usuario_{coluna}", None) #Pega os atributos das colunas protegidas (python faz o name mangling colonado antes o nome da classe)
                         print(valor)
-                    self._df_pessoas.at[idx, coluna] = valor  
-                    #print("Valor inserido: ", valor)                 
+                    self._df_pessoas.at[idx, coluna] = valor              
 
             #Aqui se filtra as colunas que não possuem listas pra poder empacotar tudo usando json
             colunas_json = [c for c in self._df_pessoas.columns if c not in ("nome", "login", "_senha", "_livro_atual", "_tempo_medio_leitura_min_dia")]
@@ -150,35 +151,34 @@ class BDmanager(BDManager_cnt):
             colunas_json = ["resenhas"]
             self.salvar_database(caminho_livros, colunas_json, self._df_livros)
 
-            pass
         else: 
             raise ValueError("Objeto inserido desconhecido")
 
         return True
 
-
+"""
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()
     p1 = UsuarioComum('', 'teste','1234')
     l1 = Livro("A Sombra no Porão","Marcos Valadares", 2018,312,"terror","Editora Noite Alta","Uma família descobre que o porão da casa nova guarda algo que se alimenta do medo.","16+")
     
-    """
+    
     TESTE FUNCIONOU!
     ret = bd1.validar_objeto(p1)
     print("Validação da pessoa: ",ret)
     ret = bd1.validar_objeto(l1)
     print("Validação do livro: ",ret)
-    """
-    """
+
     Atributos privados prejudicam bastante mas está funcionando
     
     p1.nome = "6767"
     bd1.atualizar_objeto(p1)
     l1.descricao = "76"
     bd1.atualizar_objeto(l1)
-    """
+    
     
     
 
 test()
+"""
