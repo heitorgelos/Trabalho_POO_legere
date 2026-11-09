@@ -131,7 +131,6 @@ class Livro():
     def resenhas(self) -> list[str]:
         return self._resenhas
 
-    # completamente provisório e incompleto !!!!!!
     def avaliar(self, nota: float, resenha: str) -> None:
         if nota < 0 or nota > 5:
             raise ValueError("A nota deve ser entre 0 e 5.")

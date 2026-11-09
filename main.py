@@ -17,18 +17,24 @@ def main():
     while(sistema_rodando):
 
         user = Interface.tela_inicial(bd)
+        print(type(user))
+        input("VOltou para a main")
+
         if user is None:
+            print("bbb")
+
             if Interface.continuar_ou_sair() == False: 
+                print("ccc")
                 sistema_rodando = False
                 continue
 
         if isinstance(user, UsuarioComum):
             print("debug: entrando menu comum")
-            Interface.menu_gerente(user, bd)
+            Interface.menu_comum(user, bd)
 
         elif isinstance(user, UsuarioGerente):
             print("debug: entrando menu gerente")
-            Interface.menu_comum(user, bd)
+            Interface.menu_gerente(user, bd)
 
         else:
             print("ERRO: Nenhum menu definido")

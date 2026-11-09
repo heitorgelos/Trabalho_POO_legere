@@ -38,7 +38,9 @@ def tela_inicial(bd):
             if is_valid:
                 # print e input para visualizar funcionamento
                 print(f"Bem vindo(a) {user_real.nome}")
-                input("aperte enter") # esses "aperte enter" eh so pra eu ver as coisas acontecendo, serao removidos
+                print(f"Quantas vezes a mais tem que se ferrar: {user_real.paginometro}")
+                print("retorno de user comum")
+                input("aperte enter e retorna user_real") # esses "aperte enter" eh so pra eu ver as coisas acontecendo, serao removidos
                 return user_real
             
             # agr ve se eh usuario gerente
@@ -48,6 +50,7 @@ def tela_inicial(bd):
             if is_valid:
                 # print e input para visualizar funcionamento
                 print(f"Bem vindo(a) {user_real.nome}")
+                print("retornou usuario gerente")
                 input("aperte enter")
                 return user_real
 
@@ -77,6 +80,7 @@ def continuar_ou_sair():
 
 def menu_comum(usuario: UsuarioComum, bd):
     while True:
+        #input("chegou no while true")
         limpar_tela()
         print("========================================")
         print(f"      PAINEL DO LEITOR: {usuario.nome}  ")

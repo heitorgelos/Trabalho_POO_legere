@@ -77,8 +77,13 @@ class BDmanager(BDManager_cnt):
                 obj_cmp.__dict__["login"] == obj.__dict__["_login"]
                 and obj_cmp.__dict__["_senha"] == obj.__dict__["_Usuario__senha"]
             )
-            print("Pessoa encontrada")
-            return cmp, obj
+            
+            obj_cmp.construtor_bd(self, linha_dict)
+            
+            #print("Pessoa encontrada")
+            #print(obj_cmp.__dict__)
+            
+            return cmp, obj_cmp
 
         elif isinstance(obj, Livro): #Mesma lógica
             linha_alvo = self._df_livros[self._df_livros["titulo"]==obj.titulo]

@@ -47,6 +47,31 @@ class Usuario(Usuario_cnt):
         self.__trechos_pref = []
         self.__metas_leitura = []
 
+    def construtor_bd(self, solicitante, dados: dict): 
+    
+        from src.implement.BDManager_imp import BDmanager
+        if not isinstance(solicitante, BDmanager):
+            raise TypeError("Solicitante sem autorização")
+
+        # 1. Chamamos o __init__ para garantir que as validações base ocorram
+        # e para criar os atributos que não vêm do banco (como paginas_lidas_totais)
+        nome_bd = dados.get("nome", "")
+        login_bd = dados.get("login", "")
+        senha_bd = dados.get("_senha", "")
+        self.__init__(nome_bd, login_bd, senha_bd)
+
+        # 2. Mapeamento explícito de cada chave do BD para o atributo da classe
+        self.__biblioteca_pessoal  = dados.get("_biblioteca_pessoal", [])
+        self.__biblioteca_desejo   = dados.get("_biblioteca_desejo", [])
+        self.__livro_atual         = dados.get("_livro_atual", None)
+        self.__livros_lidos        = dados.get("_livros_lidos", [])
+        self.__paginometro         = dados.get("_paginometro", {})
+        self.__preferencias_genero = dados.get("_preferencias_genero", [])
+        self.__livros_abandonados  = dados.get("_livros_abandonados", [])
+        self.__amigos              = dados.get("_amigos", [])
+        self.__trechos_pref        = dados.get("_trechos_pref", [])
+        self.__metas_leitura       = dados.get("_metas_leitura", [])
+        
     def resumo_desempenho(self)->None:
         qntd_livro = len(self.__livros_lidos)
         print(f"Quantidade de livros lidos: {qntd_livro}")
