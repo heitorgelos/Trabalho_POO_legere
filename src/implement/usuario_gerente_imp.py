@@ -8,7 +8,6 @@ from src.implement.usuario_comum_imp import UsuarioComum
 class UsuarioGerente(Usuario):
     def __init__(self, nome, login, senha)->None:
         super().__init__(nome, login, senha)
-        self._permissao_gerenciar = True
         self.__clube = None
 
 
@@ -40,7 +39,8 @@ class UsuarioGerente(Usuario):
 
     def deletar_clube(self, clube: ClubeLivro_cnt)->None:
         if self.__clube == clube:
-            del self.__clube
+            clube.limpar_clube(self)
+            self.__clube = None
 
         else:
             raise ValueError("Você não possui nenhum clube cadastrado")

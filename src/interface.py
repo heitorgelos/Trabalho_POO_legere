@@ -115,7 +115,8 @@ def menu_comum(usuario: UsuarioComum, bd):
                 limpar_tela()
                 print("--- DESEMPENHO E METAS ---")
                 usuario.resumo_desempenho()
-                print("\nMetas cadastradas:", usuario.consultar_metas())
+                print("\n--- Metas e Progresso de leitura ---")
+                usuario.consultar_metas_progresso()
                 input("\nAperte ENTER para voltar...")
                 
             case "4":

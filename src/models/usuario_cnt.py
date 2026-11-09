@@ -37,9 +37,9 @@ class Usuario_cnt(ABC):
         pass
 
     @abstractmethod
-    def consultar_metas(self)-> list:
+    def consultar_metas_progresso(self)-> None:
         """
-        Exibe metas cadastradas pelo usuário
+        Exibe metas cadastradas pelo usuário e o seu progresso
         """
         pass
 
@@ -65,23 +65,30 @@ class Usuario_cnt(ABC):
         pass
 
     @abstractmethod
-    def seguir_pessoa(self, usuario)-> None:#usuario:Usuario
+    def seguir_pessoa(self, usuario: 'Usuario')-> None:
         """
         Adiciona uma pessoa à lista de amigos
         """
         pass
 
     @abstractmethod
-    def cadastrar_livro_bp(self, livro:Livro, bd:BDmanager)-> None:
+    def cadastrar_livro_bp(self, livro:Livro, bd:BDManager_cnt)-> None:
         """
         Cadastra um livro exixtente no banco de dados na biblioteca pessoal
         """
         pass
 
     @abstractmethod
-    def adicionar_lista_desejo(self, livro: Livro, bd: BDmanager)-> None:
+    def adicionar_lista_desejo(self, livro: Livro, bd: BDManager_cnt)-> None:
         """
         Adiciona um livro à lista de desejos
+        """
+        pass
+
+    @abstractmethod
+    def remover_lista_desejo(self, livro: Livro, bd: BDManager_cnt)->None:
+        """
+        Remove um livro da lista de desejo
         """
         pass
 

@@ -74,12 +74,19 @@ class Usuario(Usuario_cnt):
         else:
             raise ValueError("Meta inválida")
 
-    def consultar_metas(self)->list:
+    def consultar_metas_progresso(self)->None:
         if not self.__metas_leitura:
-            print("Vocênão possui metas cadastradas")
-            return []
-        
-        return self.__metas_leitura
+            print("Você não possui metas cadastradas")
+            return 
+        #percorre uma lista e em cada posição printa o dict
+        for meta in self.__metas_leitura:
+            if meta["tipo"] == "paginas_por_mes":
+                print(f"Meta mensal de páginas: {meta['alvo']}")
+                print(f"Progresso: {meta['progresso']} de {meta['alvo']} páginas")
+
+            elif meta["tipo"] == "livros_por_ano":
+                print(f"Meta anual de livros: {meta['alvo']}")
+                print(f"Progresso: {meta['progresso']} de {meta['alvo']} livros")
     
     def registrar_tempo_leitura(self, tempo: float, data: str)->None:
         if not isinstance(tempo, (float,int)):
@@ -168,6 +175,20 @@ class Usuario(Usuario_cnt):
             raise ValueError("Esse livro já está cadastrado na sua lista de desejos")
         
         self.__biblioteca_desejo.append(livro)
+
+    def remover_lista_desejo(self, livro: Livro, bd: BDManager_cnt)->None:
+        if not isinstance(livro, Livro):
+            raise TypeError("O livro indicado não é uma instância de Livro")
+
+        if not isinstance(bd, BDManager_cnt):
+            raise TypeError("O banco fornecido não é uma instância de BDmanager")
+
+        if bd.validar_objeto(livro) == False:
+            raise ValueError("Livro não exist eno banco de dados")
+
+        if livro not in self.__biblioteca_desejo:
+            raise ValueError("Esse livro não está cadastrado na sua lista de desejos")
+
 
     def avaliar_livro(self, livro: Livro, nota: float, resenha: str)->None:
         if not isinstance(livro, Livro):
