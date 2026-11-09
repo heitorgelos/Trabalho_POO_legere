@@ -136,6 +136,8 @@ class ClubeLivro(ClubeLivro_cnt):
             self.__membros = []
             self.__excluidos = []
             self.__livros = [] 
+            self.__moderador=[]
+            self.__nome_clube=""
             return True
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
