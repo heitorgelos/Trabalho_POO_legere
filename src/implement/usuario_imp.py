@@ -248,7 +248,7 @@ class Usuario(Usuario_cnt):
             raise ValueError("Só é possivel registrar trechos de livros lidos ou em leitura")
 
         #os trechos pref são informações dadas pelo usuário e cada resgistro liga o trecho a um livro referente
-        registro = {"livro": livro, "techo": trecho.strip()}
+        registro = {"livro": livro, "trecho": trecho.strip()}
         self.__trechos_pref.append(registro) 
 
     def iniciar_leitura(self, livro: Livro, bd:BDManager_cnt)->None:

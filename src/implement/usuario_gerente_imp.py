@@ -16,6 +16,10 @@ class UsuarioGerente(Usuario):
         print(f"Login: {self._login}")
         print("Tipo de conta: Gerente")
 
+    @property
+    def clube(self):
+        return self.__clube
+
     def criar_clube(self)-> 'ClubeLivro':
         from src.implement.clube_livro_imp import ClubeLivro
 
@@ -25,25 +29,25 @@ class UsuarioGerente(Usuario):
         self.__clube = ClubeLivro(self)
         return self.__clube
 
-    def nomear_clube(self, clube:ClubeLivro_cnt, nome: str):
+    def nomear_clube(self, clube:ClubeLivro_cnt, nome: str) -> bool:
         clube.definir_nome(self,nome)
 
-    def passar_moderacao(self, clube, novo_moderador):
+    def passar_moderacao(self, clube, novo_moderador) -> bool:
         clube.redefinir_moderador(self, novo_moderador)
         
-    def ver_expulsos(self, clube):
+    def ver_expulsos(self, clube) -> list:
         return clube.ver_expulsos(self)
 
-    def adicionar_participante(self, clube: ClubeLivro_cnt, user: UsuarioComum):
+    def adicionar_participante(self, clube: ClubeLivro_cnt, user: UsuarioComum) -> bool:
         clube.adicionar_pessoa(self, user)
 
-    def remover_participante(self, clube: ClubeLivro_cnt, user: UsuarioComum)->None:
+    def remover_participante(self, clube: ClubeLivro_cnt, user: UsuarioComum) -> bool:
         clube.expulsar_pessoa(self, user)
         
-    def adicionar_livro(self, clube: ClubeLivro_cnt, livro: Livro)->None:
+    def adicionar_livro(self, clube: ClubeLivro_cnt, livro: Livro) -> bool:
         clube.adicionar_livro(self, livro)
 
-    def deletar_clube(self, clube: ClubeLivro_cnt)->None:
+    def deletar_clube(self, clube: ClubeLivro_cnt) -> bool:
         if self.__clube == clube:
             clube.limpar_clube(self)
             self.__clube = None
@@ -51,9 +55,7 @@ class UsuarioGerente(Usuario):
         else:
             raise ValueError("Você não possui nenhum clube cadastrado")
 
-    @property
-    def clube(self):
-        return self.__clube
+
 
     
 

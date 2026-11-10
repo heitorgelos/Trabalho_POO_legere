@@ -100,14 +100,20 @@ class ClubeLivro(ClubeLivro_cnt):
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
                
-    def adicionar_pessoa(self, solicitante:UsuarioGerente, adicionado) -> bool:
-        if self.__moderador[0] == solicitante.login:
-            if adicionado.login in self.__excluidos:
-                print("Membro já foi excluido anteriormente!")
-                return True
-            self.__membros.append(adicionado.login) #Qual atributo do adicionado salvar ?
-        else: 
+    def adicionar_pessoa(self, solicitante: UsuarioGerente, adicionado) -> bool:
+        if self.__moderador[0] != solicitante.login:
             raise TypeError("Solicitante não tem autorização para realiza a operação")
+
+        if adicionado.login in self.__excluidos:
+            print("Membro já foi excluido anteriormente")
+            return False
+
+        if adicionado.login in self.__membros:
+            print("Essa pessoa já é membro do clube")
+            return False
+
+        self.__membros.append(adicionado.login)
+        return True
 
     def expulsar_pessoa(self, solicitante:UsuarioGerente, expulso) -> bool:
         if self.__moderador[0] == solicitante.login: 
