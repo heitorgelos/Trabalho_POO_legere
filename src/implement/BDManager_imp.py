@@ -39,6 +39,7 @@ class BDmanager(BDManager_cnt):
             "_biblioteca_desejo": list,
             "_livros_lidos": list,
             "_paginometro": dict,
+            "_tempo_leitura_dia": dict,
             "_preferencias_genero": list,
             "_livros_abandonados": list,
             "_amigos": list,
@@ -51,7 +52,7 @@ class BDmanager(BDManager_cnt):
             df_pessoas[col] = df_pessoas[col].apply(lambda x, t=tipo: _parse_json(x, t()))
 
         df_pessoas["_livro_atual"] = df_pessoas["_livro_atual"].fillna("")
-        df_pessoas["_tempo_medio_leitura_min_dia"] = df_pessoas["_tempo_medio_leitura_min_dia"].fillna(0)
+        #df_pessoas["_tempo_medio_leitura_min_dia"] = df_pessoas["_tempo_medio_leitura_min_dia"].fillna(0)
         df_pessoas["nome"] = df_pessoas["nome"].fillna("")
 
         self._df_livros = df_livros
@@ -60,7 +61,7 @@ class BDmanager(BDManager_cnt):
     
     def validar_objeto(self, obj) -> tuple[bool, any]:
 
-        if isinstance(obj, (UsuarioComum or UsuarioGerente)): 
+        if isinstance(obj, (UsuarioComum, UsuarioGerente)): 
 
             #Aqui eu vou checar se o nome do usuário existe no df
             linha_alvo = self._df_pessoas[self._df_pessoas["login"] == obj.login]
@@ -140,7 +141,7 @@ class BDmanager(BDManager_cnt):
                     self._df_pessoas.at[idx, coluna] = valor              
 
             #Aqui se filtra as colunas que não possuem listas pra poder empacotar tudo usando json
-            colunas_json = [c for c in self._df_pessoas.columns if c not in ("nome", "login", "_senha", "_livro_atual", "_tempo_medio_leitura_min_dia")]
+            colunas_json = [c for c in self._df_pessoas.columns if c not in ("nome", "login", "_senha", "_livro_atual")]
             self.salvar_database(caminho_pessoas, colunas_json, self._df_pessoas)
 
         elif isinstance(obj_original, Livro):
@@ -169,7 +170,7 @@ class BDmanager(BDManager_cnt):
         RAIZ = Path(__file__).resolve().parents[2]
         caminho_pessoas = RAIZ / "src" / "database" / "usuarios_comuns_ficticios_2.csv"
 
-        if isinstance(obj, (UsuarioComum or UsuarioGerente)):
+        if isinstance(obj, (UsuarioComum, UsuarioGerente)):
             if (self._df_pessoas["login"] == obj.login).any():
                 raise ValueError("Já existe um usuário com esse login")
 
@@ -177,30 +178,26 @@ class BDmanager(BDManager_cnt):
             for coluna in self._df_pessoas.columns:
                 if coluna in ("nome", "login"):
                     linha.append(getattr(obj, coluna))
-                elif coluna == "_tempo_medio_leitura_min_dia":
-                    linha.append(0.0) 
                 else:
                     linha.append(getattr(obj, f"_Usuario_{coluna}"))  # fazendo o name mangling
 
             self._df_pessoas.loc[len(self._df_pessoas)] = linha
 
             colunas_json = [c for c in self._df_pessoas.columns
-                            if c not in ("nome", "login", "_senha", "_livro_atual",
-                                        "_tempo_medio_leitura_min_dia")] #Separando as colunas que nao sao compactadas em JSON
+                            if c not in ("nome", "login", "_senha", "_livro_atual")] #Separando as colunas que nao sao compactadas em JSON
             self.salvar_database(caminho_pessoas, colunas_json, self._df_pessoas)
         return True
 
-
-
+"""
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()
     p1 = UsuarioComum('Aura', 'six','seven')
-    l1 = Livro("A Sombra no Porão","Marcos Valadares", 2018,312,"terror","Editora Noite Alta","Uma família descobre que o porão da casa nova guarda algo que se alimenta do medo.","16+")
-    print(bd1.cadastrar_objeto(p1))
+    bd1.cadastrar_objeto(p1)
+    print("Hello1",bd1.validar_objeto(p1))
 
 test()
-"""
+
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()

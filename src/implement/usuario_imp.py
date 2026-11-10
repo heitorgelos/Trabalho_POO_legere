@@ -50,7 +50,7 @@ class Usuario(Usuario_cnt):
     def construtor_bd(self, solicitante, dados: dict): 
     
         from src.implement.BDManager_imp import BDmanager
-        if not isinstance(solicitante, BDmanager):
+        if not isinstance(solicitante, BDManager_cnt):
             raise TypeError("Solicitante sem autorização")
 
         # 1. Chamamos o __init__ para garantir que as validações base ocorram
@@ -71,6 +71,11 @@ class Usuario(Usuario_cnt):
         self.__amigos              = dados.get("_amigos", [])
         self.__trechos_pref        = dados.get("_trechos_pref", [])
         self.__metas_leitura       = dados.get("_metas_leitura", [])
+
+        self.__tempo_leitura_dia = dados.get("_tempo_leitura_dia", {})
+        self.__tempo_de_leitura_total = sum(self.__tempo_leitura_dia.values())
+        self.__paginas_lidas_totais = sum(self.__paginometro.values())
+
         
     def resumo_desempenho(self)->None:
         qntd_livro = len(self.__livros_lidos)
