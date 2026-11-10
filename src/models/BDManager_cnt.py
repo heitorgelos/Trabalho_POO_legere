@@ -9,34 +9,29 @@ class BDManager_cnt(ABC):
         pass
 
     @abstractmethod
-    def carregar_database(self):
+    def carregar_database(self) -> bool:
         """
         Carrega as bases de dados externas de livros e usuários 
         """
         pass
 
     @abstractmethod
-    def validar_objeto(self):
+    def validar_objeto(self, obj) -> tuple[bool, any]:
         """
         Recebe um objeto e pesquisa se ele de fato existe na base de dados, se sim retorna true se não retorna False
-        Para usuários: busca pelo nome e login 
-        Para livros: busca pelo título
+        Para usuários: busca pelo nome e login -> inalteráveis
+        Para livros: busca pelo título -> inalteráveis
         """
         pass
 
-    #@abstractmethod
-    def indicar_objeto(self):
-        """
-        Usará IA para indicar um livro ou objeto de possível agrado do usuário de acordo com suas preferências
-        """
-
-
     @abstractmethod
-    def atualizar_objeto(self, obj): 
+    def atualizar_objeto(self, obj_original) -> bool:
         """
         Atualiza a base de dados com as novas informações 
         Para usuários: busca pelo nome e login -> inalteráveis
         Para livros: busca pelo título -> inalteráveis
         """
         pass 
+
+
    

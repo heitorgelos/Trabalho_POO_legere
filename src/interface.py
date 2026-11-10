@@ -71,8 +71,6 @@ def salvar_usuario(usuario, bd):
         with redirect_stdout(io.StringIO()):
             bd.atualizar_objeto(usuario)
         print("\nAtualização enviada ao banco de dados.")
-        print("Atenção: a implementação atual salva em arquivos *_2.csv,")
-        print("mas carrega os CSV originais. Confira essa limitação ao reiniciar.")
     except Exception as erro:
         print(f"\nAs alterações continuam na sessão, mas não foram salvas: {erro}")
 
@@ -195,8 +193,6 @@ def tela_inicial(bd):
 
                 bd.cadastrar_objeto(novo_usuario)
                 if tipo == "2":
-                    # O banco atual não possui uma coluna para distinguir gerentes.
-                    # Mantemos essa informação durante a execução atual.
                     if not hasattr(bd, "_gerentes_interface"):
                         bd._gerentes_interface = set()
                     bd._gerentes_interface.add(login)
@@ -353,6 +349,7 @@ def menu_biblioteca(usuario, bd):
             pausar()
 
 
+
 def menu_desempenho(usuario, bd):
     while True:
         titulo("DESEMPENHO E METAS")
@@ -449,8 +446,6 @@ def menu_clube(usuario: UsuarioGerente, bd):
             executar(usuario.criar_clube)
             clube = usuario.clube
             if clube is not None:
-                # A implementação cria a lista de nome vazia, mas definir_nome
-                # acessa a posição zero. Inicializamos essa posição pela interface.
                 if not clube.nome:
                     clube.nome.append("")
                 nome = input("Nome do clube: ").strip()

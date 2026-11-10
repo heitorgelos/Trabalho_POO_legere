@@ -361,6 +361,10 @@ class Usuario(Usuario_cnt):
     @property
     def livros_abandonados(self):
         return self.__livros_abandonados
+
+    @property
+    def trechos_pref(self):
+        return self.__trechos_pref
     
 
 
