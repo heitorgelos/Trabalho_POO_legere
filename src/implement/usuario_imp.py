@@ -69,7 +69,7 @@ class Usuario(Usuario_cnt):
         self.__preferencias_genero = dados.get("_preferencias_genero", [])
         self.__livros_abandonados  = dados.get("_livros_abandonados", [])
         self.__amigos              = dados.get("_amigos", [])
-        self.__trechos_pref        = dados.get("_trechos_pref", [])1
+        self.__trechos_pref        = dados.get("_trechos_pref", [])
         self.__metas_leitura       = dados.get("_metas_leitura", [])
 
         self.__tempo_leitura_dia = dados.get("_tempo_leitura_dia", {})
@@ -361,6 +361,10 @@ class Usuario(Usuario_cnt):
     @property
     def livros_abandonados(self):
         return self.__livros_abandonados
+
+    @property
+    def trechos_pref(self):
+        return self.__trechos_pref
     
 
 
