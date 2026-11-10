@@ -4,6 +4,7 @@ Aqui se implementa os atributos e métodos obrigatórios
 """
 from src.models.BDManager_cnt import BDManager_cnt
 from src.implement.usuario_comum_imp import UsuarioComum
+from src.implement.usuario_gerente_imp import UsuarioGerente
 from src.implement.livro_imp import Livro
 from pathlib import Path
 import pandas as pd, json
@@ -59,7 +60,7 @@ class BDmanager(BDManager_cnt):
     
     def validar_objeto(self, obj) -> tuple[bool, any]:
 
-        if isinstance(obj, UsuarioComum): 
+        if isinstance(obj, (UsuarioComum or UsuarioGerente)): 
 
             #Aqui eu vou checar se o nome do usuário existe no df
             linha_alvo = self._df_pessoas[self._df_pessoas["login"] == obj.login]
@@ -156,7 +157,43 @@ class BDmanager(BDManager_cnt):
 
         return True
 
+    def cadastrar_objeto(self, obj)->bool:
+        #Caminho de salvamento
+        RAIZ = Path(__file__).resolve().parents[2]
+        PASTA_DB = RAIZ / "src" / "database"
+
+        caminho_pessoas = PASTA_DB /"usuarios_comuns_ficticios_2.csv"
+        caminho_livros  = PASTA_DB / "livros_ficticios_2.csv"
+
+        if isinstance(obj, UsuarioComum): 
+            valores_lista_totais = []
+            dicionario_obj = obj.__dict__
+            for valores in dicionario_obj.values():
+                valores_lista_totais.append(valores)
+
+            valores_lista_reduzidos = []
+            for i in range(len(self._df_pessoas.columns)):
+                valores_lista_reduzidos.append(valores_lista_totais[i])
+
+            #print("Valores do último usuário: ",valores_lista_reduzidos, "Tamanho da lista: ", len(valores_lista_reduzidos), "Tamanho das colunas do df: ", len(self._df_pessoas.columns))
+            self._df_pessoas.loc[len(self._df_pessoas)] = valores_lista_reduzidos
+            
+            colunas_json = [c for c in self._df_pessoas.columns if c not in ("nome", "login", "_senha", "_livro_atual", "_tempo_medio_leitura_min_dia")]
+            self.salvar_database(caminho_pessoas, colunas_json, self._df_pessoas)
+
+        return True
+
+
 """
+def test(): 
+    bd1 = BDmanager()
+    bd1.carregar_database()
+    #p1 = UsuarioComum('Aura', 'six','seven')
+    l1 = Livro("Macarrao na chapa","Tavinho", 2018,312,"terror","Editora Noite Alta","Uma família descobre que o porão da casa nova guarda algo que se alimenta do medo.","16+")
+    bd1.cadastrar_objeto(l1)
+
+test()
+
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()
