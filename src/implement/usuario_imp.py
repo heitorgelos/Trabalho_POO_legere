@@ -312,7 +312,7 @@ class Usuario(Usuario_cnt):
         if genero.lower() not in [gen.lower() for gen in self.__preferencias_genero]:
             raise ValueError("O gênero informado não está nas preferências")
         
-        self.__preferencias_genero =[gen for gen in self.__preferencias_genero if gen.lower() != genero.lower]
+        self.__preferencias_genero =[gen for gen in self.__preferencias_genero if gen.lower() != genero.lower()]
 
     def consultar_preferencia(self)->list:
         return self.__preferencias_genero
