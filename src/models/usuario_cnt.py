@@ -16,6 +16,13 @@ class Usuario_cnt(ABC):
         pass
 
     @abstractmethod
+    def construtor_bd(self, solicitante: BDManager_cnt, dados: dict) -> None:
+        """
+        Construtor utilizado pelo banco de dados
+        """
+        pass
+
+    @abstractmethod
     def consultar_perfil(self) -> None:
         """
         Exibe informações do perfil de acordo com o tipo de usuário
@@ -44,9 +51,9 @@ class Usuario_cnt(ABC):
         pass
 
     @abstractmethod
-    def registrar_tempo_leitura(self, tempo: float)-> None:
+    def registrar_tempo_leitura(self, tempo: float, data: str)-> None:
         """
-        Registra de maneira acumulativa o tempo dedicado a leitura
+        Registro de duas formas: acumulativa de todos os dias de uso e quanto leu por dia
         """ 
         pass
 
@@ -107,7 +114,7 @@ class Usuario_cnt(ABC):
         pass
     
     @abstractmethod
-    def iniciar_leitura(self, livro: Livro_cnt)-> None:
+    def iniciar_leitura(self, livro: Livro_cnt, bd:BDManager_cnt)-> None:
         """
         Define o livro atual do usuário
         """

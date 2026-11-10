@@ -47,7 +47,7 @@ class Usuario(Usuario_cnt):
         self.__trechos_pref = []
         self.__metas_leitura = []
 
-    def construtor_bd(self, solicitante, dados: dict): 
+    def construtor_bd(self, solicitante: BDManager_cnt, dados: dict) -> None: 
     
         from src.implement.BDManager_imp import BDmanager
         if not isinstance(solicitante, BDManager_cnt):
@@ -76,7 +76,6 @@ class Usuario(Usuario_cnt):
         self.__tempo_de_leitura_total = sum(self.__tempo_leitura_dia.values())
         self.__paginas_lidas_totais = sum(self.__paginometro.values())
 
-        
     def resumo_desempenho(self)->None:
         qntd_livro = len(self.__livros_lidos)
         print(f"Quantidade de livros lidos: {qntd_livro}")
@@ -223,7 +222,6 @@ class Usuario(Usuario_cnt):
             raise ValueError("Esse livro não está cadastrado na sua lista de desejos")
 
         self.__biblioteca_desejo.remove(livro)
-
 
     def avaliar_livro(self, livro: Livro, nota: float, resenha: str)->None:
         if not isinstance(livro, Livro):
