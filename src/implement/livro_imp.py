@@ -137,7 +137,7 @@ class Livro():
         resenha_str = resenha.strip()
         if not resenha_str:
             raise ValueError("A resenha não pode ser vazia")
-        qtd_avaliacoes = len(self.__resenhas)
+        qtd_avaliacoes = len(self._resenhas)
         nota_total = qtd_avaliacoes * self._estrelas
         media_nova = (nota_total + nota) / (qtd_avaliacoes + 1)
         
