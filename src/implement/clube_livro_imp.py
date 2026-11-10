@@ -75,7 +75,7 @@ class ClubeLivro(ClubeLivro_cnt):
     def salvar_dados(self) -> bool:
         if  len(self.__membros)==0 or len(self.__livros)==0 or len(self.__moderador)==0:
             raise ValueError("Há atributos nulos sendo salvos, preencha todas as informações básicas antes")
-        with open("src/database/database.txt", mode='a+') as f:
+        with open("src/database/database.txt", mode='w') as f:
             try:
                 f.write(str(self.__moderador))
                 f.write("\n")

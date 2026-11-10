@@ -72,7 +72,10 @@ class BDmanager(BDManager_cnt):
 
             #Pegando os dicionarios e comparando
             linha_dict = self._df_pessoas.iloc[linha_idx].to_dict()
-            obj_cmp = UsuarioComum.__new__(UsuarioComum)
+            if isinstance(obj, UsuarioComum):
+                obj_cmp = UsuarioComum.__new__(UsuarioComum)
+            else: 
+                obj_cmp = UsuarioGerente.__new__(UsuarioGerente)
             obj_cmp.__dict__ = linha_dict
             cmp = (
                 obj_cmp.__dict__["login"] == obj.__dict__["_login"]
@@ -95,7 +98,7 @@ class BDmanager(BDManager_cnt):
             linha_dict = self._df_livros.iloc[linha_idx].to_dict()
             obj_cmp = Livro.__new__(Livro)
             obj_cmp.__dict__ = linha_dict
-            cmp = (obj_cmp.__dict__["titulo"] == obj.__dict__["_Livro__titulo"] and obj_cmp.__dict__["autor"] == obj.__dict__["_Livro__autor"])
+            cmp = (obj_cmp.__dict__["titulo"] == obj.__dict__["_titulo"] and obj_cmp.__dict__["autor"] == obj.__dict__["_autor"])
             return cmp, obj
 
         else: 
@@ -162,43 +165,42 @@ class BDmanager(BDManager_cnt):
 
         return True
 
-    def cadastrar_objeto(self, obj)->bool:
-        #Caminho de salvamento
+    def cadastrar_objeto(self, obj) -> bool:
         RAIZ = Path(__file__).resolve().parents[2]
-        PASTA_DB = RAIZ / "src" / "database"
+        caminho_pessoas = RAIZ / "src" / "database" / "usuarios_comuns_ficticios_2.csv"
 
-        caminho_pessoas = PASTA_DB /"usuarios_comuns_ficticios_2.csv"
-        caminho_livros  = PASTA_DB / "livros_ficticios_2.csv"
+        if isinstance(obj, (UsuarioComum or UsuarioGerente)):
+            if (self._df_pessoas["login"] == obj.login).any():
+                raise ValueError("Já existe um usuário com esse login")
 
-        if isinstance(obj, UsuarioComum): 
-            valores_lista_totais = []
-            dicionario_obj = obj.__dict__
-            for valores in dicionario_obj.values():
-                valores_lista_totais.append(valores)
+            linha = []
+            for coluna in self._df_pessoas.columns:
+                if coluna in ("nome", "login"):
+                    linha.append(getattr(obj, coluna))
+                elif coluna == "_tempo_medio_leitura_min_dia":
+                    linha.append(0.0) 
+                else:
+                    linha.append(getattr(obj, f"_Usuario_{coluna}"))  # fazendo o name mangling
 
-            valores_lista_reduzidos = []
-            for i in range(len(self._df_pessoas.columns)):
-                valores_lista_reduzidos.append(valores_lista_totais[i])
+            self._df_pessoas.loc[len(self._df_pessoas)] = linha
 
-            #print("Valores do último usuário: ",valores_lista_reduzidos, "Tamanho da lista: ", len(valores_lista_reduzidos), "Tamanho das colunas do df: ", len(self._df_pessoas.columns))
-            self._df_pessoas.loc[len(self._df_pessoas)] = valores_lista_reduzidos
-            
-            colunas_json = [c for c in self._df_pessoas.columns if c not in ("nome", "login", "_senha", "_livro_atual", "_tempo_medio_leitura_min_dia")]
+            colunas_json = [c for c in self._df_pessoas.columns
+                            if c not in ("nome", "login", "_senha", "_livro_atual",
+                                        "_tempo_medio_leitura_min_dia")] #Separando as colunas que nao sao compactadas em JSON
             self.salvar_database(caminho_pessoas, colunas_json, self._df_pessoas)
-
         return True
 
 
-"""
+
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()
-    #p1 = UsuarioComum('Aura', 'six','seven')
-    l1 = Livro("Macarrao na chapa","Tavinho", 2018,312,"terror","Editora Noite Alta","Uma família descobre que o porão da casa nova guarda algo que se alimenta do medo.","16+")
-    bd1.cadastrar_objeto(l1)
+    p1 = UsuarioComum('Aura', 'six','seven')
+    l1 = Livro("A Sombra no Porão","Marcos Valadares", 2018,312,"terror","Editora Noite Alta","Uma família descobre que o porão da casa nova guarda algo que se alimenta do medo.","16+")
+    print(bd1.cadastrar_objeto(p1))
 
 test()
-
+"""
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()
