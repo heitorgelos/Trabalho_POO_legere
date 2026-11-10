@@ -63,7 +63,7 @@ class Usuario(Usuario_cnt):
         # 2. Mapeamento explícito de cada chave do BD para o atributo da classe
         self.__biblioteca_pessoal  = dados.get("_biblioteca_pessoal", [])
         self.__biblioteca_desejo   = dados.get("_biblioteca_desejo", [])
-        self.__livro_atual         = dados.get("_livro_atual", None)
+        self.__livro_atual = dados.get("_livro_atual") or None
         self.__livros_lidos        = dados.get("_livros_lidos", [])
         self.__paginometro         = dados.get("_paginometro", {})
         self.__preferencias_genero = dados.get("_preferencias_genero", [])
