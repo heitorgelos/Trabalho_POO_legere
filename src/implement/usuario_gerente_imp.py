@@ -28,6 +28,12 @@ class UsuarioGerente(Usuario):
     def nomear_clube(self, clube:ClubeLivro_cnt, nome: str):
         clube.definir_nome(self,nome)
 
+    def passar_moderacao(self, clube, novo_moderador):
+        clube.redefinir_moderador(self, novo_moderador)
+        
+    def ver_expulsos(self, clube):
+        return clube.ver_expulsos(self)
+
     def adicionar_participante(self, clube: ClubeLivro_cnt, user: UsuarioComum):
         clube.adicionar_pessoa(self, user)
 
@@ -44,6 +50,12 @@ class UsuarioGerente(Usuario):
 
         else:
             raise ValueError("Você não possui nenhum clube cadastrado")
+
+    @property
+    def clube(self):
+        return self.__clube
+
+    
 
 
     

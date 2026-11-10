@@ -98,7 +98,7 @@ class Usuario(Usuario_cnt):
 
         elif meta == "livros":
             alvo = int(input("Quantos livros por ano?"))
-            nova_meta = {"tipo": "livros_por_ano", "alvo": alvo, "progresso": 0}
+            nova_meta = {"tipo": "livros_no_ano", "alvo": alvo, "progresso": 0}
             self.__metas_leitura.append(nova_meta)
 
         else:
@@ -114,7 +114,7 @@ class Usuario(Usuario_cnt):
                 print(f"Meta mensal de páginas: {meta['alvo']}")
                 print(f"Progresso: {meta['progresso']} de {meta['alvo']} páginas")
 
-            elif meta["tipo"] == "livros_por_ano":
+            elif meta["tipo"] == "livros_no_ano":
                 print(f"Meta anual de livros: {meta['alvo']}")
                 print(f"Progresso: {meta['progresso']} de {meta['alvo']} livros")
     
@@ -165,7 +165,7 @@ class Usuario(Usuario_cnt):
             if meta["tipo"] == "paginas_por_mes":
                 meta["progresso"] = self.__paginometro[mes]
 
-    def seguir_pessoa(self, user:Usuario)->None:
+    def seguir_pessoa(self, user:'Usuario')->None:
         if not isinstance(user, Usuario):
             raise TypeError("O objeto deve ser uma instância de Usuario")
         if user.login == self.login:
@@ -182,8 +182,9 @@ class Usuario(Usuario_cnt):
 
         if not isinstance(bd, BDManager_cnt):
             raise TypeError("O banco informado não é uma instância de BDmanager")
-        
-        if bd.validar_objeto(livro) == False:
+
+        valido, _ = bd.validar_objeto(livro)
+        if not valido:
             raise ValueError("Este livro não existe no banco de dados")
         
         if livro in self.__biblioteca_pessoal:
@@ -197,8 +198,9 @@ class Usuario(Usuario_cnt):
 
         if not isinstance(bd, BDManager_cnt):
             raise TypeError("O banco informado não é uma instância de BDmanager")
-    
-        if bd.validar_objeto(livro) == False:
+
+        valido, _ = bd.validar_objeto(livro)
+        if not valido:
             raise ValueError("Livro não consta no banco de dados")
         
         if livro in self.__biblioteca_desejo:
@@ -212,8 +214,9 @@ class Usuario(Usuario_cnt):
 
         if not isinstance(bd, BDManager_cnt):
             raise TypeError("O banco fornecido não é uma instância de BDmanager")
-
-        if bd.validar_objeto(livro) == False:
+        
+        valido, _ = bd.validar_objeto(livro)
+        if not valido:
             raise ValueError("Livro não exist eno banco de dados")
 
         if livro not in self.__biblioteca_desejo:
@@ -245,7 +248,7 @@ class Usuario(Usuario_cnt):
             raise ValueError("Só é possivel registrar trechos de livros lidos ou em leitura")
 
         #os trechos pref são informações dadas pelo usuário e cada resgistro liga o trecho a um livro referente
-        registro = {"livro": livro, "texto": trecho.strip()}
+        registro = {"livro": livro, "techo": trecho.strip()}
         self.__trechos_pref.append(registro) 
 
     def iniciar_leitura(self, livro: Livro, bd:BDManager_cnt)->None:
@@ -258,8 +261,8 @@ class Usuario(Usuario_cnt):
         if self.__livro_atual is not None:
             raise ValueError("Já tem uma leitura em andamento")
         
-
-        if not bd.validar_objeto(livro):
+        valido, _ = bd.validar_objeto(livro)
+        if not valido:
             raise ValueError("O livro não existe no banco de dados")
 
         self.__livro_atual = livro
@@ -274,7 +277,7 @@ class Usuario(Usuario_cnt):
 
         #atualizando progresso de meta livros por ano
         for meta in self.__metas_leitura:
-            if meta["tipo"] == "livros_por_ano":
+            if meta["tipo"] == "livros_no_ano":
                 meta["progresso"] += 1
 
     def abandonar_leitura(self)->None:
@@ -311,7 +314,7 @@ class Usuario(Usuario_cnt):
         if genero.lower() not in [gen.lower() for gen in self.__preferencias_genero]:
             raise ValueError("O gênero informado não está nas preferências")
         
-        self.__preferencias_genero =[gen for gen in self.__preferencias_genero if gen != genero]
+        self.__preferencias_genero =[gen for gen in self.__preferencias_genero if gen.lower() != genero.lower]
 
     def consultar_preferencia(self)->list:
         return self.__preferencias_genero
