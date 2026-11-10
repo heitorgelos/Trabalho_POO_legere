@@ -47,6 +47,31 @@ class Usuario(Usuario_cnt):
         self.__trechos_pref = []
         self.__metas_leitura = []
 
+    def construtor_bd(self, solicitante, dados: dict): 
+    
+        from src.implement.BDManager_imp import BDmanager
+        if not isinstance(solicitante, BDmanager):
+            raise TypeError("Solicitante sem autorização")
+
+        # 1. Chamamos o __init__ para garantir que as validações base ocorram
+        # e para criar os atributos que não vêm do banco (como paginas_lidas_totais)
+        nome_bd = dados.get("nome", "")
+        login_bd = dados.get("login", "")
+        senha_bd = dados.get("_senha", "")
+        self.__init__(nome_bd, login_bd, senha_bd)
+
+        # 2. Mapeamento explícito de cada chave do BD para o atributo da classe
+        self.__biblioteca_pessoal  = dados.get("_biblioteca_pessoal", [])
+        self.__biblioteca_desejo   = dados.get("_biblioteca_desejo", [])
+        self.__livro_atual         = dados.get("_livro_atual", None)
+        self.__livros_lidos        = dados.get("_livros_lidos", [])
+        self.__paginometro         = dados.get("_paginometro", {})
+        self.__preferencias_genero = dados.get("_preferencias_genero", [])
+        self.__livros_abandonados  = dados.get("_livros_abandonados", [])
+        self.__amigos              = dados.get("_amigos", [])
+        self.__trechos_pref        = dados.get("_trechos_pref", [])
+        self.__metas_leitura       = dados.get("_metas_leitura", [])
+        
     def resumo_desempenho(self)->None:
         qntd_livro = len(self.__livros_lidos)
         print(f"Quantidade de livros lidos: {qntd_livro}")
@@ -74,12 +99,19 @@ class Usuario(Usuario_cnt):
         else:
             raise ValueError("Meta inválida")
 
-    def consultar_metas(self)->list:
+    def consultar_metas_progresso(self)->None:
         if not self.__metas_leitura:
-            print("Vocênão possui metas cadastradas")
-            return []
-        
-        return self.__metas_leitura
+            print("Você não possui metas cadastradas")
+            return 
+        #percorre uma lista e em cada posição printa o dict
+        for meta in self.__metas_leitura:
+            if meta["tipo"] == "paginas_por_mes":
+                print(f"Meta mensal de páginas: {meta['alvo']}")
+                print(f"Progresso: {meta['progresso']} de {meta['alvo']} páginas")
+
+            elif meta["tipo"] == "livros_por_ano":
+                print(f"Meta anual de livros: {meta['alvo']}")
+                print(f"Progresso: {meta['progresso']} de {meta['alvo']} livros")
     
     def registrar_tempo_leitura(self, tempo: float, data: str)->None:
         if not isinstance(tempo, (float,int)):
@@ -168,6 +200,20 @@ class Usuario(Usuario_cnt):
             raise ValueError("Esse livro já está cadastrado na sua lista de desejos")
         
         self.__biblioteca_desejo.append(livro)
+
+    def remover_lista_desejo(self, livro: Livro, bd: BDManager_cnt)->None:
+        if not isinstance(livro, Livro):
+            raise TypeError("O livro indicado não é uma instância de Livro")
+
+        if not isinstance(bd, BDManager_cnt):
+            raise TypeError("O banco fornecido não é uma instância de BDmanager")
+
+        if bd.validar_objeto(livro) == False:
+            raise ValueError("Livro não exist eno banco de dados")
+
+        if livro not in self.__biblioteca_desejo:
+            raise ValueError("Esse livro não está cadastrado na sua lista de desejos")
+
 
     def avaliar_livro(self, livro: Livro, nota: float, resenha: str)->None:
         if not isinstance(livro, Livro):

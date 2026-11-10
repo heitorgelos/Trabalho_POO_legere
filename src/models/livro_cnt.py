@@ -13,5 +13,6 @@ class Livro_cnt(ABC):
     @abstractmethod
     def avaliar(nota: float, resenha: str) -> None:
         """
+        Permite avaliar um livro ( Resenha e Nota )
         """
         pass

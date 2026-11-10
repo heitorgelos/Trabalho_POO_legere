@@ -65,7 +65,7 @@ class BDmanager(BDManager_cnt):
             #Aqui eu vou checar se o nome do usuário existe no df
             linha_alvo = self._df_pessoas[self._df_pessoas["login"] == obj.login]
             if len(linha_alvo)==0:
-                return None, False
+                return False, None 
 
             #Pegando o índice da linha
             linha_idx = linha_alvo.index[0]
@@ -78,14 +78,19 @@ class BDmanager(BDManager_cnt):
                 obj_cmp.__dict__["login"] == obj.__dict__["_login"]
                 and obj_cmp.__dict__["_senha"] == obj.__dict__["_Usuario__senha"]
             )
-            print("Pessoa encontrada")
-            return cmp, obj
+            
+            obj_cmp.construtor_bd(self, linha_dict)
+            
+            #print("Pessoa encontrada")
+            #print(obj_cmp.__dict__)
+            
+            return cmp, obj_cmp
 
         elif isinstance(obj, Livro): #Mesma lógica
             linha_alvo = self._df_livros[self._df_livros["titulo"]==obj.titulo]
             if len(linha_alvo)==0:
                 print("Livro não existe")
-                return False
+                return False, None
             linha_idx = linha_alvo.index[0]
             linha_dict = self._df_livros.iloc[linha_idx].to_dict()
             obj_cmp = Livro.__new__(Livro)

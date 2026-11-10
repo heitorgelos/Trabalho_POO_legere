@@ -120,7 +120,7 @@ class ClubeLivro(ClubeLivro_cnt):
 
     def redefinir_moderador(self, solicitante:UsuarioGerente, novo_mod:UsuarioGerente) -> bool:
         if self.__moderador[0] == solicitante.login: 
-            self.__moderador[0]==novo_mod.login
+            self.__moderador[0] = novo_mod.login
             return True
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
@@ -131,7 +131,7 @@ class ClubeLivro(ClubeLivro_cnt):
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
 
-    def limpar_clube(self, solicitante:UsuarioGerente, expulso) -> bool:
+    def limpar_clube(self, solicitante:UsuarioGerente) -> bool:
         if self.__moderador[0] == solicitante.login: 
             self.__membros = []
             self.__excluidos = []
