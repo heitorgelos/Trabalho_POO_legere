@@ -1,5 +1,5 @@
 """
-Este código é o contrato da classe BDmanager.
+Este código é o contrato da classe ClubeLivro
 Aqui se determina os atributos e métodos obrigatórios
 """
 from abc import ABC, abstractmethod

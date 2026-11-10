@@ -3,7 +3,7 @@ Este código é o contrato da classe Usuario
 Aqui se determina os atributos e métodos obrigatórios
 """
 from src.models.BDManager_cnt import BDManager_cnt
-from src.implement.livro_imp import Livro
+from src.models.livro_cnt import Livro_cnt
 from abc import ABC, abstractmethod
 
 class Usuario_cnt(ABC):
@@ -72,42 +72,42 @@ class Usuario_cnt(ABC):
         pass
 
     @abstractmethod
-    def cadastrar_livro_bp(self, livro:Livro, bd:BDManager_cnt)-> None:
+    def cadastrar_livro_bp(self, livro:Livro_cnt, bd:BDManager_cnt)-> None:
         """
         Cadastra um livro exixtente no banco de dados na biblioteca pessoal
         """
         pass
 
     @abstractmethod
-    def adicionar_lista_desejo(self, livro: Livro, bd: BDManager_cnt)-> None:
+    def adicionar_lista_desejo(self, livro: Livro_cnt, bd: BDManager_cnt)-> None:
         """
         Adiciona um livro à lista de desejos
         """
         pass
 
     @abstractmethod
-    def remover_lista_desejo(self, livro: Livro, bd: BDManager_cnt)->None:
+    def remover_lista_desejo(self, livro: Livro_cnt, bd: BDManager_cnt)->None:
         """
         Remove um livro da lista de desejo
         """
         pass
 
     @abstractmethod
-    def avaliar_livro(self, livro: Livro, nota: float, resenha: str)-> None:
+    def avaliar_livro(self, livro: Livro_cnt, nota: float, resenha: str)-> None:
         """
         Registra nota e resenha de um livro
         """
         pass
 
     @abstractmethod
-    def registrar_trecho(self, livro: Livro, trecho:str)-> None:
+    def registrar_trecho(self, livro: Livro_cnt, trecho:str)-> None:
         """
         Registra um trecho interessante de um livro
         """
         pass
     
     @abstractmethod
-    def iniciar_leitura(self, livro: Livro)-> None:
+    def iniciar_leitura(self, livro: Livro_cnt)-> None:
         """
         Define o livro atual do usuário
         """
