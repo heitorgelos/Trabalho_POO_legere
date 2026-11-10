@@ -100,7 +100,7 @@ class BDmanager(BDManager_cnt):
             obj_cmp = Livro.__new__(Livro)
             obj_cmp.__dict__ = linha_dict
             cmp = (obj_cmp.__dict__["titulo"] == obj.__dict__["_titulo"] and obj_cmp.__dict__["autor"] == obj.__dict__["_autor"])
-            print("Dicionario recebido do dataframe: ",linha_dict)
+            #print("Dicionario recebido do dataframe: ",linha_dict)
             return cmp, obj
 
         else: 

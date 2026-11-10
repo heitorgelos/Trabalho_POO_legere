@@ -53,14 +53,14 @@ class Usuario(Usuario_cnt):
         if not isinstance(solicitante, BDManager_cnt):
             raise TypeError("Solicitante sem autorização")
 
-        # 1. Chamamos o __init__ para garantir que as validações base ocorram
+        #Chamamos o __init__ para garantir que as validações base ocorram
         # e para criar os atributos que não vêm do banco (como paginas_lidas_totais)
         nome_bd = dados.get("nome", "")
         login_bd = dados.get("login", "")
         senha_bd = dados.get("_senha", "")
         self.__init__(nome_bd, login_bd, senha_bd)
 
-        # 2. Mapeamento explícito de cada chave do BD para o atributo da classe
+        #Mapeamento explícito de cada chave do BD para o atributo da classe
         self.__biblioteca_pessoal  = dados.get("_biblioteca_pessoal", [])
         self.__biblioteca_desejo   = dados.get("_biblioteca_desejo", [])
         self.__livro_atual = dados.get("_livro_atual") or None
@@ -69,7 +69,7 @@ class Usuario(Usuario_cnt):
         self.__preferencias_genero = dados.get("_preferencias_genero", [])
         self.__livros_abandonados  = dados.get("_livros_abandonados", [])
         self.__amigos              = dados.get("_amigos", [])
-        self.__trechos_pref        = dados.get("_trechos_pref", [])
+        self.__trechos_pref        = dados.get("_trechos_pref", [])1
         self.__metas_leitura       = dados.get("_metas_leitura", [])
 
         self.__tempo_leitura_dia = dados.get("_tempo_leitura_dia", {})
@@ -189,7 +189,7 @@ class Usuario(Usuario_cnt):
         if livro in self.__biblioteca_pessoal:
             raise ValueError("Esse livro já está cadastrado na sua biblioteca pessoal")
         
-        self.__biblioteca_pessoal.append(livro)
+        self.__biblioteca_pessoal.append(livro.titulo)
 
     def adicionar_lista_desejo(self, livro: Livro, bd: BDManager_cnt)->None:
         if not isinstance(livro, Livro):
@@ -205,7 +205,7 @@ class Usuario(Usuario_cnt):
         if livro in self.__biblioteca_desejo:
             raise ValueError("Esse livro já está cadastrado na sua lista de desejos")
         
-        self.__biblioteca_desejo.append(livro)
+        self.__biblioteca_desejo.append(livro.titulo)
 
     def remover_lista_desejo(self, livro: Livro, bd: BDManager_cnt)->None:
         if not isinstance(livro, Livro):
@@ -221,13 +221,13 @@ class Usuario(Usuario_cnt):
         if livro not in self.__biblioteca_desejo:
             raise ValueError("Esse livro não está cadastrado na sua lista de desejos")
 
-        self.__biblioteca_desejo.remove(livro)
+        self.__biblioteca_desejo.remove(livro.titulo)
 
     def avaliar_livro(self, livro: Livro, nota: float, resenha: str)->None:
         if not isinstance(livro, Livro):
             raise TypeError("O livro não é uma instancia de Livro")
 
-        if livro not in self.__livros_lidos:
+        if livro.titulo not in self.__livros_lidos:
             raise ValueError("Não é possível avaliar um livro que não foi lido")
         
         livro.avaliar(nota, resenha)
@@ -242,11 +242,11 @@ class Usuario(Usuario_cnt):
         if not trecho.strip():
             raise ValueError("O trecho não pode ser vazio")
 
-        if livro not in self.__livros_lidos and livro != self.__livro_atual: # só entra no bloco se as duas condições forem true
+        if livro.titulo not in self.__livros_lidos and livro.titulo != self.__livro_atual: # só entra no bloco se as duas condições forem true
             raise ValueError("Só é possivel registrar trechos de livros lidos ou em leitura")
 
         #os trechos pref são informações dadas pelo usuário e cada resgistro liga o trecho a um livro referente
-        registro = {"livro": livro, "trecho": trecho.strip()}
+        registro = {"livro": livro.titulo, "trecho": trecho.strip()}
         self.__trechos_pref.append(registro) 
 
     def iniciar_leitura(self, livro: Livro, bd:BDManager_cnt)->None:
@@ -263,7 +263,7 @@ class Usuario(Usuario_cnt):
         if not valido:
             raise ValueError("O livro não existe no banco de dados")
 
-        self.__livro_atual = livro
+        self.__livro_atual = livro.titulo
 
     def concluir_leitura(self)->None:
         if self.__livro_atual is None:
