@@ -330,6 +330,7 @@ def menu_biblioteca(usuario, bd):
                 if existente is None:
                     print("Esse livro não está na sua lista de desejos.")
                 else:
+                    print("Coisa enviada para ser removida: ", existente)
                     executar(lambda: usuario.remover_lista_desejo(existente, bd))
             elif opcao == "7":
                 executar(lambda: usuario.iniciar_leitura(livro, bd))

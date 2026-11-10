@@ -102,7 +102,19 @@ class BDmanager(BDManager_cnt):
             cmp = (obj_cmp.__dict__["titulo"] == obj.__dict__["_titulo"] and obj_cmp.__dict__["autor"] == obj.__dict__["_autor"])
             #print("Dicionario recebido do dataframe: ",linha_dict)
             return cmp, obj
-
+        elif isinstance(obj, str): #livro detectado
+            
+            linha_alvo = self._df_livros[self._df_livros["titulo"]==obj]
+            if len(linha_alvo)==0:
+                print("Livro não existe")
+                return False, None
+            linha_idx = linha_alvo.index[0]
+            linha_dict = self._df_livros.iloc[linha_idx].to_dict()
+            obj_cmp = Livro.__new__(Livro)
+            obj_cmp.__dict__ = linha_dict
+            cmp = (obj_cmp.__dict__["titulo"] == obj)
+            #print("Dicionario recebido do dataframe: ",linha_dict)
+            return cmp, obj_cmp
         else: 
             raise TypeError("Objeto inserido não é de um dos tipos reconhecidos pelo sistema")
         

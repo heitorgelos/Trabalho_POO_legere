@@ -69,7 +69,7 @@ class Usuario(Usuario_cnt):
         self.__preferencias_genero = dados.get("_preferencias_genero", [])
         self.__livros_abandonados  = dados.get("_livros_abandonados", [])
         self.__amigos              = dados.get("_amigos", [])
-        self.__trechos_pref        = dados.get("_trechos_pref", [])1
+        self.__trechos_pref        = dados.get("_trechos_pref", [])
         self.__metas_leitura       = dados.get("_metas_leitura", [])
 
         self.__tempo_leitura_dia = dados.get("_tempo_leitura_dia", {})
@@ -207,9 +207,9 @@ class Usuario(Usuario_cnt):
         
         self.__biblioteca_desejo.append(livro.titulo)
 
-    def remover_lista_desejo(self, livro: Livro, bd: BDManager_cnt)->None:
-        if not isinstance(livro, Livro):
-            raise TypeError("O livro indicado não é uma instância de Livro")
+    def remover_lista_desejo(self, livro: str, bd: BDManager_cnt)->None:
+        if not isinstance(livro, str):
+            raise TypeError("O título de livro indicado não é uma instância de str")
 
         if not isinstance(bd, BDManager_cnt):
             raise TypeError("O banco fornecido não é uma instância de BDmanager")
@@ -221,7 +221,7 @@ class Usuario(Usuario_cnt):
         if livro not in self.__biblioteca_desejo:
             raise ValueError("Esse livro não está cadastrado na sua lista de desejos")
 
-        self.__biblioteca_desejo.remove(livro.titulo)
+        self.__biblioteca_desejo.remove(livro)
 
     def avaliar_livro(self, livro: Livro, nota: float, resenha: str)->None:
         if not isinstance(livro, Livro):
