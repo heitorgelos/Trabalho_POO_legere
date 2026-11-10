@@ -1,43 +1,32 @@
 """
-Arquivo principal, usa dos recursos nas pastas de modelo (contrato) e implementação.
+Arquivo main, usa dos recursos nas pastas de modelo (contrato) e implementação
 """
-
 from src.implement.BDManager_imp import BDmanager
-from src.implement.usuario_comum_imp import UsuarioComum
 from src.implement.usuario_gerente_imp import UsuarioGerente
-import src.interface as Interface
+from src.interface import tela_inicial, menu_comum, menu_gerente
+
 
 def main():
+    banco = BDmanager()
 
-    bd = BDmanager()
-    bd.carregar_database()
+    try:
+        banco.carregar_database()
+    except Exception as erro:
+        print(f"Não foi possível carregar o banco de dados: {erro}")
+        return
 
-    sistema_rodando = True
+    while True:
+        usuario = tela_inicial(banco)
 
-    while(sistema_rodando):
+        if usuario is None:
+            print("\nAté mais!")
+            break
 
-        user = Interface.tela_inicial(bd)
-        print(type(user))
-        input("VOltou para a main")
-
-        if user is None:
-            print("bbb")
-
-            if Interface.continuar_ou_sair() == False: 
-                print("ccc")
-                sistema_rodando = False
-                continue
-
-        if isinstance(user, UsuarioComum):
-            print("debug: entrando menu comum")
-            Interface.menu_comum(user, bd)
-
-        elif isinstance(user, UsuarioGerente):
-            print("debug: entrando menu gerente")
-            Interface.menu_gerente(user, bd)
-
+        if isinstance(usuario, UsuarioGerente):
+            menu_gerente(usuario, banco)
         else:
-            print("ERRO: Nenhum menu definido")
+            menu_comum(usuario, banco)
+
 
 if __name__ == "__main__":
     main()
