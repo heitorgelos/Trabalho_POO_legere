@@ -189,7 +189,7 @@ class BDmanager(BDManager_cnt):
             self.salvar_database(caminho_pessoas, colunas_json, self._df_pessoas)
         return True
 
-
+"""
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()
@@ -199,7 +199,7 @@ def test():
     print(bd1.atualizar_objeto(l1))
 
 test()
-"""
+
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()

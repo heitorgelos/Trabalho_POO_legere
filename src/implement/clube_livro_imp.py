@@ -16,7 +16,10 @@ class ClubeLivro(ClubeLivro_cnt):
         self.__livros = []
         self.__membros = []
         self.__excluidos = []
-        self.__moderador = [moderador.login]
+        if moderador==None:
+            self.__moderador = ["Pegando o gerente"]
+        else:
+            self.__moderador = [moderador.login]
 
     @property
     def moderador(self) -> list:
@@ -49,7 +52,12 @@ class ClubeLivro(ClubeLivro_cnt):
         return lista_proces
 
     def carregar_dados(self) -> bool:
-        with open("src/database/database.txt", mode='r+') as f:
+        diretorio_atual = Path(__file__).resolve().parent.parent #Pegando o diretorio dos dados
+        
+        #Obtendo os dados
+        caminho = diretorio_atual / "database" /"Teste.txt"
+
+        with open(caminho, mode='r+') as f:
             
             dados_totais = f.readlines()
             
@@ -68,14 +76,20 @@ class ClubeLivro(ClubeLivro_cnt):
 
             except Exception as e:
                 raise ValueError("Problema na base de dados do clube do livro")
-            
+
+            if len(listas_processadas)<5:
+                return False
         self.__moderador , self.__membros, self.__excluidos, self.__nome_clube, self.__livros = listas_processadas
         return True
 
     def salvar_dados(self) -> bool:
+        diretorio_atual = Path(__file__).resolve().parent.parent #Pegando o diretorio dos dados
+                
+                #Obtendo os dados
+        caminho = diretorio_atual / "database" /"Teste.txt"
         if  len(self.__membros)==0 or len(self.__livros)==0 or len(self.__moderador)==0:
             raise ValueError("Há atributos nulos sendo salvos, preencha todas as informações básicas antes")
-        with open("src/database/database.txt", mode='w') as f:
+        with open(caminho, mode='w') as f:
             try:
                 f.write(str(self.__moderador))
                 f.write("\n")

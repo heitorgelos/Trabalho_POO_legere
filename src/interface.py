@@ -7,6 +7,7 @@ from contextlib import redirect_stdout
 from src.implement.usuario_comum_imp import UsuarioComum
 from src.implement.usuario_gerente_imp import UsuarioGerente
 from src.implement.livro_imp import Livro
+from src.implement.clube_livro_imp import ClubeLivro
 
 
 def limpar_tela():
@@ -154,6 +155,16 @@ def localizar_usuario(login, bd):
     return usuario
 
 
+def get_clube_moderador():
+    cl1 = ClubeLivro(None)
+    print("foi ? ")
+    if cl1.carregar_dados():
+        print("Moderador recuperado!")
+        return cl1.moderador
+    else: 
+        #print("Retornando none")
+        return None
+    
 def tela_inicial(bd):
     while True:
         titulo("LEGERE — CONTROLE DE LEITURA")
@@ -203,8 +214,10 @@ def tela_inicial(bd):
         senha = input("Senha: ").strip()
 
         try:
-            gerentes = getattr(bd, "_gerentes_interface", set())
-            if login in gerentes:
+            print("To aqui1")
+            gerente = get_clube_moderador()
+            if login == gerente[0]:
+                print("To aqui2")
                 busca = UsuarioGerente("", login, senha)
                 valido, usuario = bd.validar_objeto(busca)
             else:

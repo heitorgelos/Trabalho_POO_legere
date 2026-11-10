@@ -2,14 +2,9 @@
 Este código é a implementação da classe Livro
 Aqui se implementa os atributos e métodos obrigatórios
 """
-#from src.models.livro_cnt import Livro_cnt
-#from src.models.usuario_comum_cnt import UsuarioComum_cnt
-#from src.implement.BDManager_imp import BDmanager
+from src.models.livro_cnt import Livro_cnt
 
-# TIRAR SETTER (???)
-
-
-class Livro():
+class Livro(Livro_cnt):
     
     def __init__(self, titulo: str, autor: str, ano: int, num_paginas: int, 
                  categoria: str, editora: str, descricao: str, faixa_etaria: str):
@@ -68,18 +63,17 @@ class Livro():
             raise ValueError("A Faixa Etária não pode ser vazia")
         
                
-        self._titulo = titulo # g OK
-        self._autor = autor # g OK
-        self._ano = ano # g OK
-        self._num_paginas = num_paginas # g OK
-        self._categoria = categoria # g OK
-        self._editora = editora # g OK
-        self._descricao = descricao # g OK
-        self._faixa_etaria = faixa_etaria # g OK
+        self._titulo = titulo
+        self._autor = autor
+        self._ano = ano
+        self._num_paginas = num_paginas
+        self._categoria = categoria
+        self._editora = editora
+        self._descricao = descricao
+        self._faixa_etaria = faixa_etaria
 
-        # valores testes (zerar dps)
-        self._estrelas = 0.0 #so get (atualiza a cada avaliacao)
-        self._resenhas = [] #so get (idem)
+        self._estrelas = 0.0 # (atualiza a cada avaliacao)
+        self._resenhas = []  # (idem)
     
     # TITULO
     @property
@@ -144,32 +138,4 @@ class Livro():
         self._resenhas.append(resenha_str)
         self._estrelas = media_nova
         print(f"O Livro foi avaliado com sucesso!")
-        print(f"Nova média: {media_nova}") # Tirar depois
-
-# apenas para teste (remover)
-livro1 = Livro(
-        titulo="harry potter",
-        autor="otavio",
-        ano=2000,
-        num_paginas=100,
-        categoria="fantasia",
-        editora="abc",
-        descricao="harry potter bla bla bla",
-        faixa_etaria="12+"
-    )
-"""
-livro1.avaliar(5, "Obra prima")
-livro1.__autor = "abc"
-print(livro1.autor)
-"""
-'''
-for i in livro1.resenhas:
-    print(i)
-
-livro1.titulo = "abc"
-print(livro1.titulo)
-#print(livro1.__titulo)
-livro1.avaliar(4.8, "Obra prima parte 2")
-for i in livro1.resenhas:
-    print(i)
-    '''
+        # print(f"Nova média: {media_nova}") # Tirar depois
