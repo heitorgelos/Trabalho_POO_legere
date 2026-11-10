@@ -12,7 +12,7 @@ import json
 
 class ClubeLivro(ClubeLivro_cnt):
     def __init__(self, moderador:UsuarioGerente):
-        self.__nome_clube = ""
+        self.__nome_clube = []
         self.__livros = []
         self.__membros = []
         self.__excluidos = []
@@ -36,7 +36,7 @@ class ClubeLivro(ClubeLivro_cnt):
 
     def definir_nome(self, solicitante:UsuarioGerente, nome) -> bool:
         if self.__moderador[0] == solicitante.login: 
-            self.__nome_clube = nome
+            self.__nome_clube[0] = nome
             return True
         else: 
             raise TypeError("Solicitante não tem autorização para realiza a operação")
@@ -69,7 +69,7 @@ class ClubeLivro(ClubeLivro_cnt):
             except Exception as e:
                 raise ValueError("Problema na base de dados do clube do livro")
             
-        self.__moderador , self.__membros, self.__excluidos, self.__livros = listas_processadas
+        self.__moderador , self.__membros, self.__excluidos, self.__nome_clube, self.__livros = listas_processadas
         return True
 
     def salvar_dados(self) -> bool:
@@ -87,6 +87,8 @@ class ClubeLivro(ClubeLivro_cnt):
                 else:
                     f.write(str(self.__excluidos))
                     f.write("\n")
+                f.write(str(self.__nome_clube))
+                f.write("\n")
                 f.write(str(self.__livros))
                 f.write("\n")
                 return True

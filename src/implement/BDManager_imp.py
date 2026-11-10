@@ -21,7 +21,7 @@ class BDmanager(BDManager_cnt):
         caminho_csv = diretorio_atual / "database" /"livros_ficticios.csv"
 
         df_livros = pd.read_csv(caminho_csv)
-        df_livros["_Livro__resenhas"] = df_livros["_Livro__resenhas"].apply(json.loads) #Aqui se pega a coluna de resenhas e se quebra em uma lista
+        df_livros["_resenhas"] = df_livros["_resenhas"].apply(json.loads) #Aqui se pega a coluna de resenhas e se quebra em uma lista
 
         #Obtendo as pessoas
         caminho_csv = diretorio_atual / "database" /"usuarios_comuns_ficticios.csv"
@@ -100,6 +100,7 @@ class BDmanager(BDManager_cnt):
             obj_cmp = Livro.__new__(Livro)
             obj_cmp.__dict__ = linha_dict
             cmp = (obj_cmp.__dict__["titulo"] == obj.__dict__["_titulo"] and obj_cmp.__dict__["autor"] == obj.__dict__["_autor"])
+            print("Dicionario recebido do dataframe: ",linha_dict)
             return cmp, obj
 
         else: 
@@ -124,7 +125,7 @@ class BDmanager(BDManager_cnt):
         caminho_pessoas = PASTA_DB /"usuarios_comuns_ficticios_2.csv"
         caminho_livros  = PASTA_DB / "livros_ficticios_2.csv"
 
-        if isinstance(obj_original, UsuarioComum):
+        if isinstance(obj_original, (UsuarioComum, UsuarioGerente)):
             is_user_true, obj_cmp = self.validar_objeto(obj_original)
 
             if is_user_true:
@@ -188,16 +189,17 @@ class BDmanager(BDManager_cnt):
             self.salvar_database(caminho_pessoas, colunas_json, self._df_pessoas)
         return True
 
-"""
+
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()
-    p1 = UsuarioComum('Aura', 'six','seven')
-    bd1.cadastrar_objeto(p1)
-    print("Hello1",bd1.validar_objeto(p1))
+    l1 = Livro("A Sombra no Porão","Marcos Valadares", 2018,312,"terror","Editora Noite Alta","Uma família descobre que o porão da casa nova guarda algo que se alimenta do medo.","67+")
+    print(bd1.validar_objeto(l1))
+    print("ATRIBUTOS: ",l1.autor, l1.categoria, l1.descricao)
+    print(bd1.atualizar_objeto(l1))
 
 test()
-
+"""
 def test(): 
     bd1 = BDmanager()
     bd1.carregar_database()
