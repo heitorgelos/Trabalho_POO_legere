@@ -285,7 +285,6 @@ def menu_biblioteca(usuario, bd):
         print("9. Abandonar leitura atual")
         print("10. Avaliar livro lido")
         print("11. Registrar trecho favorito")
-        print("12. Ver trechos preferidos")
         print("0. Voltar")
 
         opcao = ler_opcao("\nEscolha: ", [str(i) for i in range(12)])

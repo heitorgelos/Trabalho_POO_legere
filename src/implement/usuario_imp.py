@@ -209,6 +209,7 @@ class Usuario(Usuario_cnt):
 
     def remover_lista_desejo(self, livro: Livro, bd: BDManager_cnt)->None:
         if not isinstance(livro, Livro):
+            print("tipo recebido:",type(livro),"valor da str",livro)
             raise TypeError("O livro indicado não é uma instância de Livro")
 
         if not isinstance(bd, BDManager_cnt):
