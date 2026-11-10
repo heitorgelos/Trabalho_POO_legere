@@ -157,12 +157,12 @@ def localizar_usuario(login, bd):
 
 def get_clube_moderador():
     cl1 = ClubeLivro(None)
-    print("foi ? ")
+    
     if cl1.carregar_dados():
         print("Moderador recuperado!")
         return cl1.moderador
     else: 
-        #print("Retornando none")
+        
         return None
     
 def tela_inicial(bd):
@@ -214,13 +214,14 @@ def tela_inicial(bd):
         senha = input("Senha: ").strip()
 
         try:
-            print("To aqui1")
+            
             gerente = get_clube_moderador()
-            if login == gerente[0]:
-                print("To aqui2")
+            if None!= gerente and login == gerente[0]:
+                
                 busca = UsuarioGerente("", login, senha)
                 valido, usuario = bd.validar_objeto(busca)
             else:
+                
                 busca = UsuarioComum("", login, senha)
                 valido, usuario = bd.validar_objeto(busca)
 
