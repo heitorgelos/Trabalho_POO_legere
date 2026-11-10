@@ -163,13 +163,13 @@ class Usuario(Usuario_cnt):
     def seguir_pessoa(self, user:Usuario)->None:
         if not isinstance(user, Usuario):
             raise TypeError("O objeto deve ser uma instância de Usuario")
-        if user is self:
+        if user.login == self.login:
             raise ValueError("Um usuário não pode seguir a si mesmo")
 
-        if user in self.__amigos:
+        if user.login in self.__amigos:
             raise ValueError("Você já segue esse usuário")
 
-        self.__amigos.append(user)
+        self.__amigos.append(user.login)
 
     def cadastrar_livro_bp(self, livro:Livro, bd:BDManager_cnt)->None:
         if not isinstance(livro, Livro):
@@ -213,6 +213,8 @@ class Usuario(Usuario_cnt):
 
         if livro not in self.__biblioteca_desejo:
             raise ValueError("Esse livro não está cadastrado na sua lista de desejos")
+
+        self.__biblioteca_desejo.remove(livro)
 
 
     def avaliar_livro(self, livro: Livro, nota: float, resenha: str)->None:
