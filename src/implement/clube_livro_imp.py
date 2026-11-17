@@ -70,7 +70,9 @@ class ClubeLivro(ClubeLivro_cnt):
                 for linha in f:
                     
                     listas.append( linha.strip().split("'"))
+
                 listas_processadas = []
+                
                 for lista in listas:
                     listas_processadas.append(self.process_list(lista))
 

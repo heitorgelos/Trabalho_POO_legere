@@ -85,9 +85,6 @@ class BDmanager(BDManager_cnt):
             
             obj_cmp.construtor_bd(self, linha_dict)
             
-            #print("Pessoa encontrada")
-            #print(obj_cmp.__dict__)
-            
             return cmp, obj_cmp
 
         elif isinstance(obj, Livro): #Mesma lógica
